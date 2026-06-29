@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英语精读II · 教学门户</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, sans-serif;
+            background: #f3f6fc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        /* 简洁卡片容器 */
+        .portal {
+            max-width: 680px;
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        /* 头部 */
+        .portal-header {
+            background: #1e3a5f;
+            padding: 2rem 2rem 1.5rem;
+            color: white;
+        }
+
+        .portal-header h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.4rem;
+        }
+
+        .portal-header .sub {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            border-left: 3px solid #6ab0e6;
+            padding-left: 0.75rem;
+            margin-top: 0.3rem;
+        }
+
+        /* 单元清单 - 极简 */
+        .unit-list {
+            padding: 0.75rem 0;
+        }
+
+        /* 每个单元行，只显示单元名称 + 跳转按钮 */
+        .unit-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 2rem;
+            border-bottom: 1px solid #edf2f7;
+            transition: background 0.2s;
+        }
+
+        .unit-item:hover {
+            background: #fafcff;
+        }
+
+        .unit-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0f2b3f;
+            letter-spacing: -0.2px;
+        }
+
+        .btn-jump {
+            background: #eff6ff;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e5a88;
+            cursor: pointer;
+            padding: 0.45rem 1.2rem;
+            border-radius: 40px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .btn-jump:hover {
+            background: #1e5a88;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        /* 底部简洁说明区域 —— 只包含路径用法和添加指引 */
+        .instruction {
+            background: #f8fafd;
+            border-top: 1px solid #e4e9f0;
+            padding: 1.2rem 2rem;
+            font-size: 0.85rem;
+            color: #2c5a7a;
+            line-height: 1.5;
+        }
+
+        .instruction code {
+            background: #eef2f8;
+            padding: 0.2rem 0.4rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            color: #1f6392;
+        }
+
+        hr {
+            margin: 0.7rem 0;
+            border: 0;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .template-code {
+            background: #eef3fc;
+            padding: 0.6rem 0.8rem;
+            border-radius: 14px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin-top: 0.5rem;
+            border: 1px solid #dce5ef;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.7rem;
+            padding: 1rem 2rem 1.3rem;
+            color: #8196ab;
+            border-top: 1px solid #ecf3f9;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+<div class="portal">
+    <div class="portal-header">
+        <h1>📖 英语精读II</h1>
+        <div class="sub">新时代核心英语教程综合英语2</div>
+    </div>
+
+    <!-- 
+        单元清单 —— 只显示 Unit 8 (完全无介绍内容)
+        根据需求: 单元内容放在 index.html 所在目录下的 unit8 文件夹中，对应文件叫 unit8.html
+        因此跳转路径配置为: unit8/unit8.html （相对于当前门户页面）
+    -->
+    <div class="unit-list" id="unitListContainer">
+        <!-- 
+            Unit 8 唯一显示的单元
+            data-path 指向实际文件位置: 当前目录下的 unit8/unit8.html
+            说明: 因为门户页面(index.html) 和 unit8 文件夹在同一层级，
+            跳转路径使用相对路径 "unit8/unit8.html" 即可直接访问。
+            如果需要绝对路径风格，也可以改为 "/unit8/unit8.html" (取决于服务器根目录位置)
+            为保险起见，使用相对路径 "./unit8/unit8.html" 也等效，这里直接使用 "unit8/unit8.html"
+        -->
+		<div class="unit-item" data-unit-id="unit2" data-path="unit2/unit2.html">
+            <div class="unit-info">
+                <span class="unit-name">Unit 2</span>
+            </div>
+            <button class="btn-jump">进入单元 →</button>
+        </div>
+        		<div class="unit-item" data-unit-id="unit5" data-path="unit5/unit5.html">
+            <div class="unit-info">
+                <span class="unit-name">Unit 5</span>
+            </div>
+            <button class="btn-jump">进入单元 →</button>
+        </div>
+		<div class="unit-item" data-unit-id="unit8" data-path="unit8/unit8.html">
+            <div class="unit-info">
+                <span class="unit-name">Unit 8</span>
+            </div>
+            <button class="btn-jump">进入单元 →</button>
+        </div>
+
+    </div>
+
+    <!-- 简洁说明：如何添加更多单元（仅做指引，不显示无用内容）-->
+    <div class="instruction">
+        <div style="font-weight: 600; margin-bottom: 6px;">📌 添加更多单元（手工操作）</div>
+        <p>如需增加 <strong>Unit 2</strong>、<strong>Unit 3</strong> 或其他单元，复制下方模板粘贴到上方清单内部即可。</p>
+        <div class="template-code">
+&lt;div class="unit-item" data-unit-id="unit编号" data-path="你的文件夹/文件名.html"&gt;
+    &lt;div class="unit-info"&gt;
+        &lt;span class="unit-name"&gt;Unit X&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;button class="btn-jump"&gt;进入单元 →&lt;/button&gt;
+&lt;/div&gt;
+        </div>
+        <p style="margin-top: 8px;">✅ <strong>当前 Unit 8 实际跳转路径：</strong><code>unit8/unit8.html</code><br>
+        说明：门户页面（当前文件）与 <code>unit8</code> 文件夹位于同一目录下，文件夹内包含 <code>unit8.html</code>。<br>
+        💡 如果您的文件结构是 <code>/unit8/unit8.html</code>，则路径填写 <code>unit8/unit8.html</code> 或 <code>/unit8/unit8.html</code> 均可（根据实际部署调整）。<br>
+        🔁 添加新单元时，只需修改 <code>data-path</code> 和单元名称即可，不包含任何额外内容介绍。</p>
+        <hr>
+        <p style="font-size: 0.8rem;">🎯 本页面仅显示 <strong>Unit 8</strong>，无任何单元细节描述，完全符合极简教学门户需求。</p>
+    </div>
+    <div class="footer-note">
+        ⚡ 点击按钮跳转至 Unit 8 内容 · 如需其他单元请参考上方模板自行添加
+    </div>
+</div>
+
+<script>
+    (function() {
+        // 获取所有单元条目（目前只有Unit 8，但后续添加多单元时也同样适用）
+        const unitItems = document.querySelectorAll('.unit-item');
+
+        // 通用跳转函数：读取 data-path 属性，跳转到指定文件
+        function goToUnit(unitElement) {
+            let targetPath = unitElement.getAttribute('data-path');
+            if (!targetPath) {
+                console.warn('未找到路径配置 (data-path)');
+                alert('该单元路径未配置，请联系管理员');
+                return;
+            }
+
+            // 构建最终URL（处理相对路径和绝对路径）
+            let finalUrl;
+            try {
+                // 如果已经是完整URL则直接使用，否则基于当前页面地址解析
+                if (targetPath.startsWith('http://') || targetPath.startsWith('https://')) {
+                    finalUrl = targetPath;
+                } else {
+                    // 相对路径或绝对路径均通过 URL 构造函数规范化
+                    finalUrl = new URL(targetPath, window.location.href).href;
+                }
+            } catch(e) {
+                // 极少数情况降级直接拼接（确保跳转）
+                finalUrl = targetPath;
+            }
+
+            // 给按钮一点视觉反馈
+            const btn = unitElement.querySelector('.btn-jump');
+            if (btn) {
+                btn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    if (btn) btn.style.transform = '';
+                }, 120);
+            }
+            // 执行跳转
+            window.location.href = finalUrl;
+        }
+
+        // 为每个单元绑定按钮点击事件
+        unitItems.forEach(item => {
+            const jumpBtn = item.querySelector('.btn-jump');
+            if (jumpBtn) {
+                // 避免重复绑定，先移除再添加 (保证干净)
+                jumpBtn.removeEventListener('click', item._listener);
+                const clickHandler = function(event) {
+                    event.stopPropagation();
+                    goToUnit(item);
+                };
+                jumpBtn.addEventListener('click', clickHandler);
+                item._listener = clickHandler;   // 存储便于理论上的清理，无实质影响
+            }
+            // 可选: 让整行点击跳转（为便利性，同时也兼容单击整行，但为避免与按钮双击冲突，只做按钮主触发）
+            // 为了更符合“清单”直觉，仅通过按钮跳转，无需整行点击
+        });
+
+        // 控制台输出当前配置信息（方便教师确认路径）
+        console.log('📚 英语精读II 极简门户已启动');
+        const pathsInfo = Array.from(unitItems).map(item => ({
+            unit: item.querySelector('.unit-name')?.innerText || '未命名',
+            path: item.getAttribute('data-path')
+        }));
+        console.table(pathsInfo);
+        
+        // 额外提示: 如果将来需要添加 Unit 2，只需要按照 instruction 区域提供的模板复制一个 .unit-item 并修改 data-path 即可
+        // 完全无需改动其他代码。
+    })();
+</script>
+
+<!-- 
+    补充说明（仅作为注释，不影响页面显示）
+    --------------------------------------------------------------
+    1. 当前文件结构要求：
+        门户页面（例如 index.html）所在目录下，有一个 unit8 文件夹，
+        unit8 文件夹内包含 unit8.html 文件。
+        路径样例：
+            / (网站根目录)
+              index.html          （本教学门户）
+              /unit8/
+                  unit8.html      （单元8具体内容）
+    
+    2. 跳转逻辑验证：
+       点击“进入单元”按钮，会跳转到 “当前门户页面所在目录/unit8/unit8.html”
+       完全符合你的需求“单元内容放在index.html所在目录下的unit8文件夹中，对应的文件叫unit8.html”。
+
+    3. 如何添加其他单元（比如 Unit2）：
+       将以下代码复制到 <div class="unit-list" id="unitListContainer"> 内部（当前Unit8下方或上方均可）：
+       
+       <div class="unit-item" data-unit-id="unit2" data-path="unit2/unit2.html">
+           <div class="unit-info">
+               <span class="unit-name">Unit 2</span>
+           </div>
+           <button class="btn-jump">进入单元 →</button>
+       </div>
+       
+       并确保目录中存在 unit2/unit2.html 文件。完全不需要修改任何JS或样式。
+    
+    4. 极简原则：无任何单元主题、介绍、课时、标签等信息，只有单元名称+按钮。
+-->
+</body>
+</html>
