@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit 1：A Fresh Start </title>
+    <title>Course Reader</title>
+    <!-- 引入 Marked.js 解析 Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
             --bg-color: #fcfcf9;
@@ -50,14 +52,20 @@
             flex-direction: column;
         }
 
-		.para-block:hover {
-			background-color: #fff9db;
-			transition: background-color 0.3s ease;
-		}
+        .para-block::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
 
-		.para-block:nth-child(even) {
-			background-color: #f8f9fa;
-		}
+        .para-block:hover {
+            background-color: #fff9db;
+            transition: background-color 0.3s ease;
+        }
+
+        .para-block:nth-child(even) {
+            background-color: #f8f9fa;
+        }
 
         .text-wrap {
             width: 95%;
@@ -65,9 +73,36 @@
             position: relative;
             padding-left: 100px;
             text-align: justify;
-			line-height: 1.6;
-			overflow: visible;
-			color: #333
+            line-height: 1.6;
+            overflow: visible;
+            color: #333;
+        }
+
+        /* 确保 Markdown 解析出的 <p> 正常环绕与排版 */
+        .text-wrap .para-text p {
+            display: inline;
+            font-size: inherit;
+            color: inherit;
+            line-height: inherit;
+        }
+
+        /* Markdown 解析出的短语解释与链接样式 */
+        .text-wrap abbr {
+            text-decoration: underline dotted var(--accent-color);
+            cursor: help;
+            font-weight: bold;
+            color: #b7094c;
+        }
+
+        .text-wrap a {
+            color: var(--accent-color);
+            text-decoration: none;
+            border-bottom: 2px solid var(--accent-color);
+            transition: 0.2s;
+        }
+
+        .text-wrap a:hover {
+            background-color: #ffe3e3;
         }
 
         .audio-trigger {
@@ -91,15 +126,16 @@
         .audio-trigger:hover { background: var(--accent-color); transform: scale(1.1); }
 
         .img-display {
-		    float: right;
-			width: 35%;
-			max-width: 400px;
-			height: auto;
-			max-height: 600px;
-			object-fit: contain;
-			margin: 10px 0 15px 20px;
-			border: 1px solid #ddd;
-		}
+            float: right;
+            width: 35%;
+            max-width: 400px;
+            height: auto;
+            max-height: 450px;
+            object-fit: contain;
+            margin: 5px 0 15px 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
 
         #sketchpad {
             position: fixed;
@@ -165,56 +201,46 @@
             outline: none;
             resize: both;
         }
-    /* ========================================================
-           📱 移动端（手机）响应式适配样式
-           当屏幕宽度小于 768px 时，以下样式会自动生效，优化手机阅读体验
-           ======================================================== */
+
+        /* 📱 移动端响应式适配样式 */
         @media (max-width: 768px) {
             :root {
-                --font-main: 20px;   /* 手机端正文：从大屏的 32px 缩小到舒适的 20px */
-                --font-title: 32px;  /* 手机端标题：从大屏的 60px 缩小到 32px */
+                --font-main: 20px;
+                --font-title: 32px;
             }
 
-            header {
-                padding: 30px 15px;  /* 缩减顶部标题区域的上下留白 */
-            }
+            header { padding: 30px 15px; }
 
             h1 {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 10px;           /* 手机上让标题和播放按钮上下错开，避免挤在一行 */
+                gap: 10px;
             }
 
-            .container {
-                margin: 10px auto;   /* 缩减网页外层上下间距 */
-                padding: 10px;       /* 缩减网页左右两侧的留空 */
-            }
+            .container { margin: 10px auto; padding: 10px; }
 
-            .para-block {
-                margin-bottom: 25px; /* 缩减段落与段落之间的超大间距 */
-                padding: 20px 15px;  /* 缩减卡片内部的四周留白（非常关键！） */
-            }
+            .para-block { margin-bottom: 25px; padding: 20px 15px; }
 
             .text-wrap {
-                width: 100%;         /* 让文字区域占满卡片，不再浪费空间 */
-                padding-left: 55px;  /* 缩减左侧音频按钮占用的空间，给文字腾地方 */
-                text-align: left;    /* 手机上建议用左对齐，两端对齐（justify）会导致单词间距忽大忽小 */
+                width: 100%;
+                padding-left: 55px;
+                text-align: left;
             }
 
             .audio-trigger {
-                width: 45px;         /* 缩小段落前面的音频按钮尺寸 */
+                width: 45px;
                 height: 45px;
                 font-size: 18px;
-                top: 0;              /* 微调按钮对齐位置 */
+                top: 0;
             }
 
             .img-display {
-                float: none;         /* 取消图片右浮动，避免在窄屏上把文字挤成一缕 */
+                float: none;
                 display: block;
-                width: 100%;         /* 图片在手机上独自占满一行 */
+                width: 100%;
                 max-width: 100%;
-                margin: 0 0 15px 0;  /* 改为下方留空，让文字在图片下面舒服地流淌 */
+                margin: 0 0 15px 0;
             }
         }
     </style>
@@ -222,8 +248,9 @@
 <body>
 
 <header>
-    <h1>I Become a Student
-	<button onclick="playTitleAudio()" style="
+    <h1 id="unit-title">
+        <!-- 这里的标题文字会从 text.md 第一行动态获取 -->
+        <button onclick="playTitleAudio()" style="
             margin-left: 15px; 
             padding: 5px 15px; 
             font-size: 24px; 
@@ -239,7 +266,7 @@
             onmouseout="this.style.backgroundColor='#2d3436'">
             🎵 播放
         </button>
-	</h1>
+    </h1>
 </header>
 <img src="media/images/heading.jpg" 
      style="display: block; margin: 0 auto; width: 100%; max-width: 1160px; height: auto;" 
@@ -269,39 +296,81 @@
 </div>
 
 <script>
-    const paras = [
-		`1 It is possible to get an education at a university. It has been done; not often, but the fact that a proportion, however small, of college students do get a start in interested, methodical study, proves my thesis, and the following personal experience I have to offer illustrates it and shows how to get around the faculty, the other students, and the whole college system of mind-fixing. My method might lose a boy his degree, but a degree is not worth so much as the capacity and the drive to learn.`, 
-		`2 My method was hit on by accident and some instinct. I specialized. With several courses prescribed, I concentrated on the one or two that interested me most and worked intensively on my favorites. In my first two years, for example, I worked at English and political economy and read philosophy. At the beginning of my junior year I had several cinches in history. Now I liked history; I had neglected it partly because I rebelled at the way it was taught, as positive knowledge unrelated to politics, art, life, or anything else. The professors gave us chapters out of a few books to read and be quizzed on. Blessed as I was with a "bad memory," I could not commit to it anything that I did not understand and intellectually need. The bare record of the story of man, with names, dates, and irrelative events, bored me. But I had discovered in my readings of literature, philosophy, and political economy that history had light to throw upon unhistorical questions. So I proposed in my junior and senior years to specialize in history, taking all the courses required and those also that I had failed. With this in mind I listened attentively to the first introductory talk of Professor William Cary Jones on American constitutional history. He was a dull lecturer, but I noticed that, after telling us what pages of what books we must be prepared in, he listed off some other references "for those that may care to dig deeper." `,
-		`3 When the rest of the class rushed out into the sunshine, I went up to the professor and, to his surprise, asked for this memorandum. He gave it to me. Up in the library I ran through the required chapters in the two different books, and they differed on several points. Turning to the other authorities, I saw that they disagreed on the same facts and also on others. The librarian, appealed to, helped me search the bookshelves till the library closed, and then I called on Professor Jones for more references. He was astonished, invited me in, and began to approve my industry, which astonished me. I was not trying to be a good boy; I was better than that: I was a curious boy. He lent me a couple of his books, and I went off to my club to read them. They only deepened the mystery, clearing up the historical question, but leaving the answer to be dug for and written. `,
-		`4 The historians did not know! History was not a science, but a field for research, a field for me, for any young man, to explore, to make discoveries in and write a scientific report about. I was fascinated. As I went on from chapter to chapter, day after day, finding frequently essential differences of opinion and of fact, I saw more and more work to do. In this course, American constitutional history, I hunted far enough to suspect that the Fathers of the Republic who wrote our sacred Constitution of the United States not only did not, but did not want to, establish a democratic government, and I dreamed for a while—as I used as a child to play I was Napoleon or a trapper—I promised myself to write a true history of the making of the American Constitution. I did not do it; that chapter has been done or well begun since by two men: Smith of the University of Washington and Beard of Columbia. I found other events, men, and eras waiting for students. In all my other courses, in ancient, in European, and in modern history, the disagreeing authorities carried me back to the need of a fresh search for the original documents or other clinching evidence. Of course I did well in my classes. The history professors soon knew me as a student and seldom put a question to me except when the class didn't know the answer. Then Professor Jones would say, "Well, Steffens, tell them about it."`, 
-		`5 Fine. But vanity wasn't my ruling passion then. What I had was a quickening sense that I was learning a method of studying history and that every chapter of it, from the beginning of the world to the end, is crying out to be rewritten. There was something for Youth to do. `
-    
-    ];
-
     const container = document.getElementById('main-content');
+    const titleElement = document.getElementById('unit-title');
 
-    paras.forEach((p, i) => {
-        const div = document.createElement('div');
-        div.className = 'para-block';
-        const imgIdx = String(i+1).padStart(2,'0');
-        const baseName = `media/images/img_${imgIdx}`;
-		const extensions = ['.webp', '.jpg', '.jpeg', '.png', '.avif'];
-		div.innerHTML = `
-            <div class="text-wrap">
-			${extensions.map(ext => `
-			<img src="${baseName}${ext}"
-                 class="img-display"
-                 alt="Visual Resource ${i+1}"
-                 style="display: none;"
-                 onload="this.style.display='block'"
-                 onerror="this.style.display='none'">
-        `).join('')}
-                <button class="audio-trigger" onclick="playAudio(${i}+1)">${i+1}</button>
-                <p class="para-text" style="display: inline; font-size: var(--font-main); color: #333;">${p}</p>
-            </div>
-        `;
-        container.appendChild(div);
-    });
+    // 动态加载 text.md 文件
+    fetch('text.md')
+        .then(response => response.text())
+        .then(markdownText => {
+            // 按空行切分为块（第一块是标题，后面是各段落）
+            const blocks = markdownText.trim().split(/\n\s*\n/);
+            
+            // 1. 提取并渲染第一行的标题 (自动去除 Markdown 的 '#' 前缀)
+            if (blocks.length > 0) {
+                const titleText = blocks[0].replace(/^#\s*/, '');
+                
+                // 更新浏览器标签页标题
+                document.title = titleText;
+
+                // 动态渲染网页 <h1> 标题，保留播放按钮
+                titleElement.innerHTML = `${titleText}
+                    <button onclick="playTitleAudio()" style="
+                        margin-left: 15px; 
+                        padding: 5px 15px; 
+                        font-size: 24px; 
+                        font-family: sans-serif;
+                        background-color: #2d3436; 
+                        color: white; 
+                        border: none; 
+                        border-radius: 5px; 
+                        cursor: pointer;
+                        vertical-align: middle;
+                        transition: 0.3s;"
+                        onmouseover="this.style.backgroundColor='#e63946'"
+                        onmouseout="this.style.backgroundColor='#2d3436'">
+                        🎵 播放
+                    </button>`;
+            }
+
+            // 2. 剩余的块属于正文段落
+            const paras = blocks.slice(1);
+            renderParagraphs(paras);
+        })
+        .catch(err => {
+            console.error('无法读取 text.md 文件:', err);
+            container.innerHTML = '<p style="color:red; text-align:center;">课文文件加载失败，请检查根目录下是否存在 text.md 文件。</p>';
+        });
+
+    function renderParagraphs(paras) {
+        paras.forEach((p, i) => {
+            const div = document.createElement('div');
+            div.className = 'para-block';
+            const imgIdx = String(i+1).padStart(2,'0');
+            const baseName = `media/images/img_${imgIdx}`;
+            const extensions = ['.webp', '.jpg', '.jpeg', '.png', '.avif'];
+
+            // 使用 marked.parse() 把当前段落的 markdown 解析为 HTML
+            const parsedHtml = marked.parse(p);
+
+            // 关键逻辑：图片要在文本元素之前输出，以便 float: right 正常生效并防止错位
+            div.innerHTML = `
+                <div class="text-wrap">
+                    <button class="audio-trigger" onclick="playAudio(${i}+1)">${i+1}</button>
+                    ${extensions.map(ext => `
+                        <img src="${baseName}${ext}"
+                             class="img-display"
+                             alt="Visual Resource ${i+1}"
+                             style="display: none;"
+                             onload="this.style.display='block'"
+                             onerror="this.style.display='none'">
+                    `).join('')}
+                    <div class="para-text" style="font-size: var(--font-main); color: #333;">${parsedHtml}</div>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
 
 	let currentAudio = null;
 	let currentIdx = null;
@@ -364,27 +433,23 @@
     handle.onmousedown = (e) => { drag = true; ox = e.clientX - noteBox.offsetLeft; oy = e.clientY - noteBox.offsetTop; };
     window.onmousemove = (e) => { if(drag) { noteBox.style.left = (e.clientX - ox) + 'px'; noteBox.style.top = (e.clientY - oy) + 'px'; } };
     window.onmouseup = () => drag = false;
-function playTitleAudio() {
-		// 1. 如果当前点击的是标题音频，且音频已经存在
+
+    function playTitleAudio() {
 		if (currentAudio && currentIdx === 'title') {
 			if (currentAudio.paused) {
-				// 如果当前是暂停状态，点击则恢复播放
 				currentAudio.play().catch(() => {
 					console.log(`无法恢复播放音频 text.mp3`);
 				});
 			} else {
-				// 如果当前是播放状态，点击则暂停
 				currentAudio.pause();
 			}
 			return;
 		}
 
-		// 2. 如果当前正在播放其他段落的音频，先将其暂停
 		if (currentAudio) {
 			currentAudio.pause();
 		}
 
-		// 3. 首次点击标题音频，初始化并播放
 		const audioPath = 'media/audio/text.mp3'; 
 		currentAudio = new Audio(audioPath);
 		currentIdx = 'title';
@@ -392,7 +457,6 @@ function playTitleAudio() {
 			console.log(`Audio file text.mp3 not found.`);
 		});
 	}
-
 </script>
 </body>
 </html>
