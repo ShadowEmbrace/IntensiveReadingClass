@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit 5：The Guide to Being a Foodie Without Being Culturally Appropriative </title>
+    <title>Course Reader</title>
+    <!-- 引入 Marked.js 解析 Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
             --bg-color: #fcfcf9;
@@ -50,14 +52,20 @@
             flex-direction: column;
         }
 
-		.para-block:hover {
-			background-color: #fff9db;
-			transition: background-color 0.3s ease;
-		}
+        .para-block::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
 
-		.para-block:nth-child(even) {
-			background-color: #f8f9fa;
-		}
+        .para-block:hover {
+            background-color: #fff9db;
+            transition: background-color 0.3s ease;
+        }
+
+        .para-block:nth-child(even) {
+            background-color: #f8f9fa;
+        }
 
         .text-wrap {
             width: 95%;
@@ -65,9 +73,36 @@
             position: relative;
             padding-left: 100px;
             text-align: justify;
-			line-height: 1.6;
-			overflow: visible;
-			color: #333
+            line-height: 1.6;
+            overflow: visible;
+            color: #333;
+        }
+
+        /* 确保 Markdown 解析出的 <p> 正常环绕与排版 */
+        .text-wrap .para-text p {
+            display: inline;
+            font-size: inherit;
+            color: inherit;
+            line-height: inherit;
+        }
+
+        /* Markdown 解析出的短语解释与链接样式 */
+        .text-wrap abbr {
+            text-decoration: underline dotted var(--accent-color);
+            cursor: help;
+            font-weight: bold;
+            color: #b7094c;
+        }
+
+        .text-wrap a {
+            color: var(--accent-color);
+            text-decoration: none;
+            border-bottom: 2px solid var(--accent-color);
+            transition: 0.2s;
+        }
+
+        .text-wrap a:hover {
+            background-color: #ffe3e3;
         }
 
         .audio-trigger {
@@ -91,15 +126,16 @@
         .audio-trigger:hover { background: var(--accent-color); transform: scale(1.1); }
 
         .img-display {
-		    float: right;
-			width: 35%;
-			max-width: 400px;
-			height: auto;
-			max-height: 600px;
-			object-fit: contain;
-			margin: 10px 0 15px 20px;
-			border: 1px solid #ddd;
-		}
+            float: right;
+            width: 35%;
+            max-width: 400px;
+            height: auto;
+            max-height: 450px;
+            object-fit: contain;
+            margin: 5px 0 15px 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
 
         #sketchpad {
             position: fixed;
@@ -165,56 +201,46 @@
             outline: none;
             resize: both;
         }
-    /* ========================================================
-           📱 移动端（手机）响应式适配样式
-           当屏幕宽度小于 768px 时，以下样式会自动生效，优化手机阅读体验
-           ======================================================== */
+
+        /* 📱 移动端响应式适配样式 */
         @media (max-width: 768px) {
             :root {
-                --font-main: 20px;   /* 手机端正文：从大屏的 32px 缩小到舒适的 20px */
-                --font-title: 32px;  /* 手机端标题：从大屏的 60px 缩小到 32px */
+                --font-main: 20px;
+                --font-title: 32px;
             }
 
-            header {
-                padding: 30px 15px;  /* 缩减顶部标题区域的上下留白 */
-            }
+            header { padding: 30px 15px; }
 
             h1 {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 10px;           /* 手机上让标题和播放按钮上下错开，避免挤在一行 */
+                gap: 10px;
             }
 
-            .container {
-                margin: 10px auto;   /* 缩减网页外层上下间距 */
-                padding: 10px;       /* 缩减网页左右两侧的留空 */
-            }
+            .container { margin: 10px auto; padding: 10px; }
 
-            .para-block {
-                margin-bottom: 25px; /* 缩减段落与段落之间的超大间距 */
-                padding: 20px 15px;  /* 缩减卡片内部的四周留白（非常关键！） */
-            }
+            .para-block { margin-bottom: 25px; padding: 20px 15px; }
 
             .text-wrap {
-                width: 100%;         /* 让文字区域占满卡片，不再浪费空间 */
-                padding-left: 55px;  /* 缩减左侧音频按钮占用的空间，给文字腾地方 */
-                text-align: left;    /* 手机上建议用左对齐，两端对齐（justify）会导致单词间距忽大忽小 */
+                width: 100%;
+                padding-left: 55px;
+                text-align: left;
             }
 
             .audio-trigger {
-                width: 45px;         /* 缩小段落前面的音频按钮尺寸 */
+                width: 45px;
                 height: 45px;
                 font-size: 18px;
-                top: 0;              /* 微调按钮对齐位置 */
+                top: 0;
             }
 
             .img-display {
-                float: none;         /* 取消图片右浮动，避免在窄屏上把文字挤成一缕 */
+                float: none;
                 display: block;
-                width: 100%;         /* 图片在手机上独自占满一行 */
+                width: 100%;
                 max-width: 100%;
-                margin: 0 0 15px 0;  /* 改为下方留空，让文字在图片下面舒服地流淌 */
+                margin: 0 0 15px 0;
             }
         }
     </style>
@@ -222,8 +248,9 @@
 <body>
 
 <header>
-    <h1>The Guide to Being a Foodie Without Being Culturally Appropriative
-	<button onclick="playTitleAudio()" style="
+    <h1 id="unit-title">
+        <!-- 这里的标题文字会从 text.md 第一行动态获取 -->
+        <button onclick="playTitleAudio()" style="
             margin-left: 15px; 
             padding: 5px 15px; 
             font-size: 24px; 
@@ -237,11 +264,11 @@
             transition: 0.3s;"
             onmouseover="this.style.backgroundColor='#e63946'"
             onmouseout="this.style.backgroundColor='#2d3436'">
-            🎵 播放
+            🎵 PLAY
         </button>
-	</h1>
+    </h1>
 </header>
-<img src="media/images/heading.png" 
+<img src="media/images/heading.jpg" 
      style="display: block; margin: 0 auto; width: 100%; max-width: 1160px; height: auto;" 
      onerror="this.style.display='none'">
 <div class="container" id="main-content"></div>
@@ -269,54 +296,81 @@
 </div>
 
 <script>
-    const paras = [
-        `1 I watch a lot of competitive cooking shows. And it seems like whenever there is a "bizarre" or "exotic" cooking ingredient, it's associated with foods from my culture and childhood, for example 100-year-old egg or stinky tofu. `,
-        `2 Mainstream media has made a spectacle out of foods from seemingly exotic places, and I've also observed a lot of White chefs create "Asian-inspired" dishes. When going out to eat, I notice many "Asian-fusion" themed restaurants where chefs combine all tastes in the vast and diverse continent of Asia and throw them together on both plate and menu. `,
-        `3 What is "Asian-inspired" or "Asian-fusion?" I have a sinking suspicion it's not like when my mom made me sushi with cucumbers, lunch meat, and eggs. Or toast with mayonnaise and pork sung. People used to make fun of the food I eat, and now suddenly, stuff like Spam fried rice is selling at a hip new restaurant for $16. It's frustrating when my culture gets consumed and appropriated as both trend and tourism. Yet when it comes to food, what's appropriation and what's not can be tricky to think about. `,
-        `4 Cultural appropriation is when a dominant culture adopts parts of another culture from people that it has oppressed. The dominant culture can try the food and love the food without ever having to experience oppression. Yet food appropriation isn't just eating food from someone else's culture. It might not be appropriation if you're white and you love eating dumplings and hand-pulled noodles. Enjoying food from another culture is perfectly fine. But, food is appropriated when people from the dominant culture start to fetishize or commercialize it, and when they hoard access to that particular food. `,
-        `5 When a dominant culture reduces another community to its cuisine, turns histories and stories into menu items and when people think culture can be understood with a bite of food, that's where it gets problematic. It's also harmful when the dominant culture controls the economic and material resources to produce that food for their own consumption and profit. `,
-        `6 Here are some dining behaviors that are culturally appropriative when it comes to food. `,
-        `7 Often, when we talk about "ethnic" food, we're not referring to French, German, or Italian cuisine. Usually, we're talking about Thai, Vietnamese, Indian, Ethiopian, and Mexican food—places where food is cooked by the "brownest" people. While food from Western Europe is still connected to ethnic roots, ethnic food has become reserved only for ethnicities that are perceived as exotic and foreign to White folks. `,
-        `8 While food can connect people together and serve as a way to learn about cultures other than our own, what happens is that food becomes the only symbol for certain places. Japan is reduced to ramen and sushi, Mexico is reduced to tacos, India is reduced to curry, and so on. Entire regions become reduced to menu options and ingredients, without any thought to the many different communities in these places. There's a loss of complexity and cultures end up getting homogenized. `,
-        `9 In seeking "authentic" food, we're hoping for a truly immersive experience into another culture. The food experience, whether in a restaurant in someone's home city or as part of a trip somewhere else, comes to represent a larger experience with that culture and community. Our perceptions of what is "authentic" stem from preconceived "exotic narratives" of that culture and communities. For example, it's not uncommon to hear someone say: "Oh, during my trip to Asia, I had the most authentic [fill in the blank]." `,
-        `10 Food culture has travelled in messy and complicated ways across the globe. The impacts of historical and continuing colonization are devastating to many cultures, and many "authentic" "ethnic" cuisines are connected to histories of colonization. For example, the use of Spam in different parts of Asia and the Pacific Islands, like Spam musubi or Spam in hot pot, are a direct result of U.S. colonization. Of course, this is not necessarily a bad thing in itself: If you love a dish and think it's delicious, great! If you're searching for a place that serves a particular dish, also great! However, seeking "authenticity" does not always show respect for the food of another culture. The idea of the "authentic" food experience is separated from reality. It also freezes a culture in a particular place in time. `,
-        `11 When food gets disconnected from the communities and places it's from, people start forgetting about the oppression faced by those communities. Folks might love Mexican food, but not care about different issues such as labor rights and immigration policy that impact members from that community. There are also really hurtful stereotypes connected to food where people of color get reduced to the food they eat or are called things like smelly because of their food consumption. `,
-        `12 Eating food from another culture in isolation from that culture's history and also current issues means that we're just borrowing the pieces that are enjoyable. We might not know how Kung Pao chicken also reflects a story about Chinese immigration or the complex colonial story behind curry and the homogenization of South Asian cultures. `,
-        `13 More and more now, part of chefs' training also involves travel in order to learn about different cooking techniques and ingredients. Because of this they're opening up fancy restaurants that repurpose "cheap" eats from working class and poor communities that rely on affordable, local products and ingredients. As a result, food culture gets re-colonized by chefs seeking to make that "authentic" street food they tried more elegant. Often, these restaurants are inaccessible to the communities they're appropriating from. This is different from when members from that community repurpose their own traditional foods. `,
-        `14 One of the questions that both chefs and diners should ask themselves is, who is laboring and profiting? Where are these recipes from? Who is this cuisine profiting off? Is it a group that is historically and currently oppressed? `,
-        `15 Another problem is when ingredients get reappropriated. Corporations have now repackaged local food from different places in ways that make it no longer accessible to the local communities they're from. For example, quinoa, which is native to Bolivia is now too expensive for communities there. Last year, Whole Foods declared collard greens the "new kale." Coconuts have now been packaged as high-end, luxury water. Tofu, soy, and tempeh are now staples at organic, healthy food markets. `,
-        `16 This is food gentrification, where communities can no longer afford their own cuisines and sustain their traditions. `,
-        `17 Food is an important part of communities and cultures—the relationship between food and culture also means that food can be used as a tool of oppression. `,
-        `18 It's okay if you love the taco truck outside of your workplace, love eating sushi, or enjoy trying out different recipes at home. I'm not against trying and cooking food outside your own culture—I love it, too. `,
-        `19 However, it's critical for us to reflect on how we perceive the cultures that we're consuming and think about the relationships between food, people, and power. `,
-        `20 Colonization and gentrification are directly related to the appropriation of food. We need to begin educating ourselves on issues that impact the communities that we're getting our meals from. `
-    
-    ];
-
     const container = document.getElementById('main-content');
+    const titleElement = document.getElementById('unit-title');
 
-    paras.forEach((p, i) => {
-        const div = document.createElement('div');
-        div.className = 'para-block';
-        const imgIdx = String(i+1).padStart(2,'0');
-        const baseName = `media/images/img_${imgIdx}`;
-		const extensions = ['.webp', '.jpg', '.jpeg', '.png', '.avif'];
-		div.innerHTML = `
-            <div class="text-wrap">
-			${extensions.map(ext => `
-			<img src="${baseName}${ext}"
-                 class="img-display"
-                 alt="Visual Resource ${i+1}"
-                 style="display: none;"
-                 onload="this.style.display='block'"
-                 onerror="this.style.display='none'">
-        `).join('')}
-                <button class="audio-trigger" onclick="playAudio(${i}+1)">${i+1}</button>
-                <p class="para-text" style="display: inline; font-size: var(--font-main); color: #333;">${p}</p>
-            </div>
-        `;
-        container.appendChild(div);
-    });
+    // 动态加载 text.md 文件
+    fetch('text.md')
+        .then(response => response.text())
+        .then(markdownText => {
+            // 按空行切分为块（第一块是标题，后面是各段落）
+            const blocks = markdownText.trim().split(/\n\s*\n/);
+            
+            // 1. 提取并渲染第一行的标题 (自动去除 Markdown 的 '#' 前缀)
+            if (blocks.length > 0) {
+                const titleText = blocks[0].replace(/^#\s*/, '');
+                
+                // 更新浏览器标签页标题
+                document.title = titleText;
+
+                // 动态渲染网页 <h1> 标题，保留播放按钮
+                titleElement.innerHTML = `${titleText}
+                    <button onclick="playTitleAudio()" style="
+                        margin-left: 15px; 
+                        padding: 5px 15px; 
+                        font-size: 24px; 
+                        font-family: sans-serif;
+                        background-color: #2d3436; 
+                        color: white; 
+                        border: none; 
+                        border-radius: 5px; 
+                        cursor: pointer;
+                        vertical-align: middle;
+                        transition: 0.3s;"
+                        onmouseover="this.style.backgroundColor='#e63946'"
+                        onmouseout="this.style.backgroundColor='#2d3436'">
+                        🎵 PLAY
+                    </button>`;
+            }
+
+            // 2. 剩余的块属于正文段落
+            const paras = blocks.slice(1);
+            renderParagraphs(paras);
+        })
+        .catch(err => {
+            console.error('无法读取 text.md 文件:', err);
+            container.innerHTML = '<p style="color:red; text-align:center;">课文文件加载失败，请检查根目录下是否存在 text.md 文件。</p>';
+        });
+
+    function renderParagraphs(paras) {
+        paras.forEach((p, i) => {
+            const div = document.createElement('div');
+            div.className = 'para-block';
+            const imgIdx = String(i+1).padStart(2,'0');
+            const baseName = `media/images/img_${imgIdx}`;
+            const extensions = ['.webp', '.jpg', '.jpeg', '.png', '.avif'];
+
+            // 使用 marked.parse() 把当前段落的 markdown 解析为 HTML
+            const parsedHtml = marked.parse(p);
+
+            // 关键逻辑：图片要在文本元素之前输出，以便 float: right 正常生效并防止错位
+            div.innerHTML = `
+                <div class="text-wrap">
+                    <button class="audio-trigger" onclick="playAudio(${i}+1)">${i+1}</button>
+                    ${extensions.map(ext => `
+                        <img src="${baseName}${ext}"
+                             class="img-display"
+                             alt="Visual Resource ${i+1}"
+                             style="display: none;"
+                             onload="this.style.display='block'"
+                             onerror="this.style.display='none'">
+                    `).join('')}
+                    <div class="para-text" style="font-size: var(--font-main); color: #333;">${parsedHtml}</div>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
 
 	let currentAudio = null;
 	let currentIdx = null;
@@ -334,12 +388,12 @@
 		}
 
 		const formattedIdx = String(idx).padStart(2, '0');
-		const audioPath = `media/audio/unit5_-${formattedIdx}.mp3`;
+		const audioPath = `media/audio/text-${formattedIdx}.mp3`;
 
 		currentAudio = new Audio(audioPath);
 		currentIdx = idx;
 		currentAudio.play().catch(() => {
-			console.log(`Audio file unit5_-${formattedIdx}.mp3 not found.`);
+			console.log(`Audio file text-${formattedIdx}.mp3 not found.`);
 		});
 	}
 
@@ -379,27 +433,23 @@
     handle.onmousedown = (e) => { drag = true; ox = e.clientX - noteBox.offsetLeft; oy = e.clientY - noteBox.offsetTop; };
     window.onmousemove = (e) => { if(drag) { noteBox.style.left = (e.clientX - ox) + 'px'; noteBox.style.top = (e.clientY - oy) + 'px'; } };
     window.onmouseup = () => drag = false;
-function playTitleAudio() {
-		// 1. 如果当前点击的是标题音频，且音频已经存在
+
+    function playTitleAudio() {
 		if (currentAudio && currentIdx === 'title') {
 			if (currentAudio.paused) {
-				// 如果当前是暂停状态，点击则恢复播放
 				currentAudio.play().catch(() => {
 					console.log(`无法恢复播放音频 text.mp3`);
 				});
 			} else {
-				// 如果当前是播放状态，点击则暂停
 				currentAudio.pause();
 			}
 			return;
 		}
 
-		// 2. 如果当前正在播放其他段落的音频，先将其暂停
 		if (currentAudio) {
 			currentAudio.pause();
 		}
 
-		// 3. 首次点击标题音频，初始化并播放
 		const audioPath = 'media/audio/text.mp3'; 
 		currentAudio = new Audio(audioPath);
 		currentIdx = 'title';
@@ -407,7 +457,6 @@ function playTitleAudio() {
 			console.log(`Audio file text.mp3 not found.`);
 		});
 	}
-
 </script>
 </body>
 </html>

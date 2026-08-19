@@ -1,4 +1,4 @@
-# I Become a Student
+# Unit 1 I Become a Student by 
 
 1 It is possible to get an education at a university. It has been done; not often, but the fact that a proportion, however small, of college students do get a start in interested, methodical study, proves my thesis, and the following personal experience I have to offer illustrates it and shows how to get around the faculty, the other students, and the whole college system of mind-fixing. My method might lose a boy his <abbr title="学位：大学颁发的学术证书">degree</abbr>, but a degree is not worth so much as the capacity and the drive to learn.
 

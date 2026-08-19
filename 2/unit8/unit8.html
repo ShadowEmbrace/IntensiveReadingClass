@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit 8: The Art of Storytelling - Classroom Display</title>
+    <title>Course Reader</title>
+    <!-- 引入 Marked.js 解析 Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
             --bg-color: #fcfcf9;
@@ -50,14 +52,20 @@
             flex-direction: column;
         }
 
-		.para-block:hover {
-			background-color: #fff9db;
-			transition: background-color 0.3s ease;
-		}
+        .para-block::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
 
-		.para-block:nth-child(even) {
-			background-color: #f8f9fa;
-		}
+        .para-block:hover {
+            background-color: #fff9db;
+            transition: background-color 0.3s ease;
+        }
+
+        .para-block:nth-child(even) {
+            background-color: #f8f9fa;
+        }
 
         .text-wrap {
             width: 95%;
@@ -65,9 +73,36 @@
             position: relative;
             padding-left: 100px;
             text-align: justify;
-			line-height: 1.6;
-			overflow: visible;
-			color: #333
+            line-height: 1.6;
+            overflow: visible;
+            color: #333;
+        }
+
+        /* 确保 Markdown 解析出的 <p> 正常环绕与排版 */
+        .text-wrap .para-text p {
+            display: inline;
+            font-size: inherit;
+            color: inherit;
+            line-height: inherit;
+        }
+
+        /* Markdown 解析出的短语解释与链接样式 */
+        .text-wrap abbr {
+            text-decoration: underline dotted var(--accent-color);
+            cursor: help;
+            font-weight: bold;
+            color: #b7094c;
+        }
+
+        .text-wrap a {
+            color: var(--accent-color);
+            text-decoration: none;
+            border-bottom: 2px solid var(--accent-color);
+            transition: 0.2s;
+        }
+
+        .text-wrap a:hover {
+            background-color: #ffe3e3;
         }
 
         .audio-trigger {
@@ -91,15 +126,16 @@
         .audio-trigger:hover { background: var(--accent-color); transform: scale(1.1); }
 
         .img-display {
-		    float: right;
-			width: 35%;
-			max-width: 400px;
-			height: auto;
-			max-height: 600px;
-			object-fit: contain;
-			margin: 10px 0 15px 20px;
-			border: 1px solid #ddd;
-		}
+            float: right;
+            width: 35%;
+            max-width: 400px;
+            height: auto;
+            max-height: 450px;
+            object-fit: contain;
+            margin: 5px 0 15px 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
 
         #sketchpad {
             position: fixed;
@@ -165,65 +201,56 @@
             outline: none;
             resize: both;
         }
-    /* ========================================================
-           📱 移动端（手机）响应式适配样式
-           当屏幕宽度小于 768px 时，以下样式会自动生效，优化手机阅读体验
-           ======================================================== */
+
+        /* 📱 移动端响应式适配样式 */
         @media (max-width: 768px) {
             :root {
-                --font-main: 20px;   /* 手机端正文：从大屏的 32px 缩小到舒适的 20px */
-                --font-title: 32px;  /* 手机端标题：从大屏的 60px 缩小到 32px */
+                --font-main: 20px;
+                --font-title: 32px;
             }
 
-            header {
-                padding: 30px 15px;  /* 缩减顶部标题区域的上下留白 */
-            }
+            header { padding: 30px 15px; }
 
             h1 {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 10px;           /* 手机上让标题和播放按钮上下错开，避免挤在一行 */
+                gap: 10px;
             }
 
-            .container {
-                margin: 10px auto;   /* 缩减网页外层上下间距 */
-                padding: 10px;       /* 缩减网页左右两侧的留空 */
-            }
+            .container { margin: 10px auto; padding: 10px; }
 
-            .para-block {
-                margin-bottom: 25px; /* 缩减段落与段落之间的超大间距 */
-                padding: 20px 15px;  /* 缩减卡片内部的四周留白（非常关键！） */
-            }
+            .para-block { margin-bottom: 25px; padding: 20px 15px; }
 
             .text-wrap {
-                width: 100%;         /* 让文字区域占满卡片，不再浪费空间 */
-                padding-left: 55px;  /* 缩减左侧音频按钮占用的空间，给文字腾地方 */
-                text-align: left;    /* 手机上建议用左对齐，两端对齐（justify）会导致单词间距忽大忽小 */
+                width: 100%;
+                padding-left: 55px;
+                text-align: left;
             }
 
             .audio-trigger {
-                width: 45px;         /* 缩小段落前面的音频按钮尺寸 */
+                width: 45px;
                 height: 45px;
                 font-size: 18px;
-                top: 0;              /* 微调按钮对齐位置 */
+                top: 0;
             }
 
             .img-display {
-                float: none;         /* 取消图片右浮动，避免在窄屏上把文字挤成一缕 */
+                float: none;
                 display: block;
-                width: 100%;         /* 图片在手机上独自占满一行 */
+                width: 100%;
                 max-width: 100%;
-                margin: 0 0 15px 0;  /* 改为下方留空，让文字在图片下面舒服地流淌 */
+                margin: 0 0 15px 0;
             }
         }
-</style>
+    </style>
 </head>
 <body>
 
 <header>
-    <h1>Stop Telling Me to Travel Like a Local, OK?
-	<button onclick="playTitleAudio()" style="
+    <h1 id="unit-title">
+        <!-- 这里的标题文字会从 text.md 第一行动态获取 -->
+        <button onclick="playTitleAudio()" style="
             margin-left: 15px; 
             padding: 5px 15px; 
             font-size: 24px; 
@@ -237,12 +264,13 @@
             transition: 0.3s;"
             onmouseover="this.style.backgroundColor='#e63946'"
             onmouseout="this.style.backgroundColor='#2d3436'">
-            🎵 播放
+            🎵 PLAY
         </button>
-	</h1>
+    </h1>
 </header>
-<img src= "media/images/heading.png" style="display:block; margin: 0 auto;" onerror="this.style.display='none'">
-
+<img src="media/images/heading.jpg" 
+     style="display: block; margin: 0 auto; width: 100%; max-width: 1160px; height: auto;" 
+     onerror="this.style.display='none'">
 <div class="container" id="main-content"></div>
 
 <canvas id="sketchpad"></canvas>
@@ -268,43 +296,81 @@
 </div>
 
 <script>
-    const paras = [
-        "1 In all my years of travel, from twisting off bits of pastry in gold-tinged Vienna coffee houses to stumbling around the jungle-wrapped temple ruins in Cambodia, I have relied on the condensed wisdom of those who knew those places well to find my way through abbreviated stays. I plan my trips like a cultural interloper, making sure to hit the \"only-here\" greatest hits like the tourist that I very much am. This is not the going wisdom these days.",
-        "2 If you have researched a trip in, say, the past five to ten years or so, you may have noticed a recurring and aggressive directive: TRAVEL LIKE A LOCAL! You've probably also seen the entreaty, the shaming: How to Not Look like a Tourist; How to Not Act like a Tourist; How to Not Be a Tourist.",
-        "3 On the surface, the promise is an attractive one: You're getting the inside scoop for the best places to eat and shop with none of the tourist traps. You know only the spots that those truly in the know can find. But it's all a complete farce. At best, \"Travel like a Local\" is a silly paradoxical myth; at worst, it's terrible vacation advice.",
-        "4 For one thing, locals aren't traveling. They are working. Or folding laundry or cleaning their bathrooms or packing lunches or any of the eight zillion other inane chores that somehow take up every minute of your free time when you are NOT on vacation. Locals are not spending leisurely days strolling on stunning promenades or gawking at the crank-your-neck-tall Art Deco buildings or sparkly turquoise waters lapping on fine white-sand beaches. They are making to-do lists in their heads on cramped morning commutes or scurrying between the grocery store, the dry cleaner, and the pharmacy, trying to complete enough tasks before falling into bed. The whole point of travel is to get away from the humdrum of everyday life. It is to very much not be a local.",
-        "5 Put it this way: You simply cannot travel like a local. It is a contradiction in terms. Staying at a neighborhood Airbnb in Mexico City's Roma doesn't make you a Chilango. Parisians don't nibble on buttery pastries every day for breakfast while overlooking the Seine. And rarely do New Yorkers tuck into a three-hour tasting menu on a Tuesday night. And locals certainly don't eat 17 meals in a week at some of the best—and, at times, most expensive—restaurants in town. (Perhaps they are saving up to do so when they go on their own non-local sojourn.)",
-        "6 Locals pick up takeout and watch a junky TV drama in their pajamas. They're not going to three museums and a boat tour before draining their bank account on regional textiles, which as a non-local you should definitely not miss! Neither do locals wander around a city with fresh eyes until their feet are sore. These are the unique pleasures of being a tourist.",
-        "7 Getting the most out of your visit to a place requires acknowledging both ignorance and vulnerability and that you don't know much and need some help. There's nothing wrong with that: Remedial cultural lessons are both fun and necessary. I love taking cooking classes, typically chock-full of naive tourists in dorky aprons, and market tours in different cities. Sure, I can and have visited markets without guides and enjoyed it, but having an actual expert to explain ingredients and practices I couldn't intuit on my own makes the experience all the richer.",
-        "8 More than that, being that vulnerable, ignorant non-local sometimes gets you special treatment. Some of my best travel experiences arose from a very un-local ineptitude and the kindness and hospitality shown by actual locals. In a small village in northern Thailand, a woman once closed down her coffee shop, despite my pleas not to, to drive me on her motorbike to a rice noodle factory when I merely asked her for directions. In Kyoto, when I asked about ceramic stores at a small coffee shop—because as a dumb tourist I did not know where they were—I got an invite into a couple's home to learn kintsugi, the Japanese art of repairing broken pottery with gold or silver. I've been whisked from an artisan bread bakery to a macaroon shop in Paris by friends with cheery gusto. Hospitality to visitors is a gift; embrace it with gratitude, not shame.",
-        "9 The bid to \"Travel like a Local\"—with suggestions to buy the de rigueur anorak in Copenhagen and study maps on your phone lest you stick out as a foreigner—all seems a little middle-schoolish. At the stage in life when you can book your own trip abroad, you're old enough to not worry about fitting in. (This is, of course, distinct from respecting local customs on religious and cultural dress.) One of the delicious freedoms in traveling is that no one knows you, that there is a very low likelihood that your ex-boyfriend will happen upon you covered in dust and sweat after a half day of hiking around temple ruins. You can wear a fanny pack or shoes that you don't mind muddying up. You can ask a stranger for directions.",
-        "10 Now that I think about it, acting like a tourist in your hometown—which, yes, I admit is also a contradiction in terms—seems like a better way to approach your everyday life too. Taking a bus tour through town will give you a completely different perspective. Actually visiting a museum—instead of meaning to—is way more fulfilling than sitting on your couch cruising Twitter and Instagram. I've never been to the Statue of Liberty in New York or the Emily Dickinson house in my home state of Massachusetts. It's been years since I've visited the Cloisters in Upper Manhattan and many months since I've hiked through the Mt. Holyoke range 15 minutes from the house where I grew up. That urgent tourist energy to see and do all sorts of things is far superior to the apathy of knowing something will always be there. Maybe it's best not just to travel like a tourist, but to live like one too."
-    ];
-
     const container = document.getElementById('main-content');
+    const titleElement = document.getElementById('unit-title');
 
-    paras.forEach((p, i) => {
-        const div = document.createElement('div');
-        div.className = 'para-block';
-        const imgIdx = String(i+1).padStart(2,'0');
-        const baseName = `media/images/img_${imgIdx}`;
-		const extensions = ['.webp', '.jpg', '.jpeg', '.png', '.avif'];
-		div.innerHTML = `
-            <div class="text-wrap">
-			${extensions.map(ext => `
-			<img src="${baseName}${ext}"
-                 class="img-display"
-                 alt="Visual Resource ${i+1}"
-                 style="display: none;"
-                 onload="this.style.display='block'"
-                 onerror="this.style.display='none'">
-        `).join('')}
-                <button class="audio-trigger" onclick="playAudio(${i}+1)">${i+1}</button>
-                ${p}
-            </div>
-        `;
-        container.appendChild(div);
-    });
+    // 动态加载 text.md 文件
+    fetch('text.md')
+        .then(response => response.text())
+        .then(markdownText => {
+            // 按空行切分为块（第一块是标题，后面是各段落）
+            const blocks = markdownText.trim().split(/\n\s*\n/);
+            
+            // 1. 提取并渲染第一行的标题 (自动去除 Markdown 的 '#' 前缀)
+            if (blocks.length > 0) {
+                const titleText = blocks[0].replace(/^#\s*/, '');
+                
+                // 更新浏览器标签页标题
+                document.title = titleText;
+
+                // 动态渲染网页 <h1> 标题，保留播放按钮
+                titleElement.innerHTML = `${titleText}
+                    <button onclick="playTitleAudio()" style="
+                        margin-left: 15px; 
+                        padding: 5px 15px; 
+                        font-size: 24px; 
+                        font-family: sans-serif;
+                        background-color: #2d3436; 
+                        color: white; 
+                        border: none; 
+                        border-radius: 5px; 
+                        cursor: pointer;
+                        vertical-align: middle;
+                        transition: 0.3s;"
+                        onmouseover="this.style.backgroundColor='#e63946'"
+                        onmouseout="this.style.backgroundColor='#2d3436'">
+                        🎵 PLAY
+                    </button>`;
+            }
+
+            // 2. 剩余的块属于正文段落
+            const paras = blocks.slice(1);
+            renderParagraphs(paras);
+        })
+        .catch(err => {
+            console.error('无法读取 text.md 文件:', err);
+            container.innerHTML = '<p style="color:red; text-align:center;">课文文件加载失败，请检查根目录下是否存在 text.md 文件。</p>';
+        });
+
+    function renderParagraphs(paras) {
+        paras.forEach((p, i) => {
+            const div = document.createElement('div');
+            div.className = 'para-block';
+            const imgIdx = String(i+1).padStart(2,'0');
+            const baseName = `media/images/img_${imgIdx}`;
+            const extensions = ['.webp', '.jpg', '.jpeg', '.png', '.avif'];
+
+            // 使用 marked.parse() 把当前段落的 markdown 解析为 HTML
+            const parsedHtml = marked.parse(p);
+
+            // 关键逻辑：图片要在文本元素之前输出，以便 float: right 正常生效并防止错位
+            div.innerHTML = `
+                <div class="text-wrap">
+                    <button class="audio-trigger" onclick="playAudio(${i}+1)">${i+1}</button>
+                    ${extensions.map(ext => `
+                        <img src="${baseName}${ext}"
+                             class="img-display"
+                             alt="Visual Resource ${i+1}"
+                             style="display: none;"
+                             onload="this.style.display='block'"
+                             onerror="this.style.display='none'">
+                    `).join('')}
+                    <div class="para-text" style="font-size: var(--font-main); color: #333;">${parsedHtml}</div>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
 
 	let currentAudio = null;
 	let currentIdx = null;
@@ -322,12 +388,12 @@
 		}
 
 		const formattedIdx = String(idx).padStart(2, '0');
-		const audioPath = `media/audio/unit8_-${formattedIdx}.mp3`;
+		const audioPath = `media/audio/text-${formattedIdx}.mp3`;
 
 		currentAudio = new Audio(audioPath);
 		currentIdx = idx;
 		currentAudio.play().catch(() => {
-			console.log(`Audio file unit8_-${formattedIdx}.mp3 not found.`);
+			console.log(`Audio file text-${formattedIdx}.mp3 not found.`);
 		});
 	}
 
@@ -367,27 +433,23 @@
     handle.onmousedown = (e) => { drag = true; ox = e.clientX - noteBox.offsetLeft; oy = e.clientY - noteBox.offsetTop; };
     window.onmousemove = (e) => { if(drag) { noteBox.style.left = (e.clientX - ox) + 'px'; noteBox.style.top = (e.clientY - oy) + 'px'; } };
     window.onmouseup = () => drag = false;
-function playTitleAudio() {
-		// 1. 如果当前点击的是标题音频，且音频已经存在
+
+    function playTitleAudio() {
 		if (currentAudio && currentIdx === 'title') {
 			if (currentAudio.paused) {
-				// 如果当前是暂停状态，点击则恢复播放
 				currentAudio.play().catch(() => {
 					console.log(`无法恢复播放音频 text.mp3`);
 				});
 			} else {
-				// 如果当前是播放状态，点击则暂停
 				currentAudio.pause();
 			}
 			return;
 		}
 
-		// 2. 如果当前正在播放其他段落的音频，先将其暂停
 		if (currentAudio) {
 			currentAudio.pause();
 		}
 
-		// 3. 首次点击标题音频，初始化并播放
 		const audioPath = 'media/audio/text.mp3'; 
 		currentAudio = new Audio(audioPath);
 		currentIdx = 'title';
@@ -395,7 +457,6 @@ function playTitleAudio() {
 			console.log(`Audio file text.mp3 not found.`);
 		});
 	}
-
 </script>
 </body>
 </html>
