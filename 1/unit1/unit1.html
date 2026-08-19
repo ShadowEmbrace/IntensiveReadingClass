@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1：A Fresh Start </title>
+    <style>
+        :root {
+            --bg-color: #fcfcf9;
+            --text-color: #222;
+            --accent-color: #e63946;
+            --btn-color: #2d3436;
+            --placeholder-bg: #f0f0eb;
+            --font-main: 32px;
+            --font-title: 60px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        header {
+            padding: 80px 40px;
+            text-align: center;
+            background: #fff;
+            border-bottom: 2px solid #eee;
+        }
+
+        h1 { font-size: var(--font-title); font-weight: bold; }
+
+        .container { max-width: 1200px; margin: 40px auto; padding: 20px; }
+
+        .para-block {
+            margin-bottom: 80px;
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            clear: both;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+		.para-block:hover {
+			background-color: #fff9db;
+			transition: background-color 0.3s ease;
+		}
+
+		.para-block:nth-child(even) {
+			background-color: #f8f9fa;
+		}
+
+        .text-wrap {
+            width: 95%;
+            font-size: var(--font-main);
+            position: relative;
+            padding-left: 100px;
+            text-align: justify;
+			line-height: 1.6;
+			overflow: visible;
+			color: #333
+        }
+
+        .audio-trigger {
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--btn-color);
+            color: white;
+            border: none;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+        .audio-trigger:hover { background: var(--accent-color); transform: scale(1.1); }
+
+        .img-display {
+		    float: right;
+			width: 35%;
+			max-width: 400px;
+			height: auto;
+			max-height: 600px;
+			object-fit: contain;
+			margin: 10px 0 15px 20px;
+			border: 1px solid #ddd;
+		}
+
+        #sketchpad {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 500;
+            pointer-events: none;
+        }
+        #sketchpad.active { pointer-events: auto; cursor: crosshair; }
+
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid var(--btn-color);
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon-btn.active { background: var(--accent-color); border-color: var(--accent-color); }
+        .icon-btn svg { width: 25px; height: 25px; }
+
+        #note-box {
+            position: fixed;
+            top: 20%;
+            left: 30%;
+            width: 500px;
+            min-height: 350px;
+            background: white;
+            border: 5px solid var(--btn-color);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            box-shadow: 20px 20px 0 rgba(0,0,0,0.1);
+        }
+        .note-header {
+            background: var(--btn-color);
+            color: white;
+            padding: 10px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+        }
+        .note-body {
+            flex-grow: 1;
+            padding: 20px;
+            font-size: 36px;
+            color: #0000FF;
+            border: none;
+            outline: none;
+            resize: both;
+        }
+    /* ========================================================
+           📱 移动端（手机）响应式适配样式
+           当屏幕宽度小于 768px 时，以下样式会自动生效，优化手机阅读体验
+           ======================================================== */
+        @media (max-width: 768px) {
+            :root {
+                --font-main: 20px;   /* 手机端正文：从大屏的 32px 缩小到舒适的 20px */
+                --font-title: 32px;  /* 手机端标题：从大屏的 60px 缩小到 32px */
+            }
+
+            header {
+                padding: 30px 15px;  /* 缩减顶部标题区域的上下留白 */
+            }
+
+            h1 {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;           /* 手机上让标题和播放按钮上下错开，避免挤在一行 */
+            }
+
+            .container {
+                margin: 10px auto;   /* 缩减网页外层上下间距 */
+                padding: 10px;       /* 缩减网页左右两侧的留空 */
+            }
+
+            .para-block {
+                margin-bottom: 25px; /* 缩减段落与段落之间的超大间距 */
+                padding: 20px 15px;  /* 缩减卡片内部的四周留白（非常关键！） */
+            }
+
+            .text-wrap {
+                width: 100%;         /* 让文字区域占满卡片，不再浪费空间 */
+                padding-left: 55px;  /* 缩减左侧音频按钮占用的空间，给文字腾地方 */
+                text-align: left;    /* 手机上建议用左对齐，两端对齐（justify）会导致单词间距忽大忽小 */
+            }
+
+            .audio-trigger {
+                width: 45px;         /* 缩小段落前面的音频按钮尺寸 */
+                height: 45px;
+                font-size: 18px;
+                top: 0;              /* 微调按钮对齐位置 */
+            }
+
+            .img-display {
+                float: none;         /* 取消图片右浮动，避免在窄屏上把文字挤成一缕 */
+                display: block;
+                width: 100%;         /* 图片在手机上独自占满一行 */
+                max-width: 100%;
+                margin: 0 0 15px 0;  /* 改为下方留空，让文字在图片下面舒服地流淌 */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>I Become a Student
+	<button onclick="playTitleAudio()" style="
+            margin-left: 15px; 
+            padding: 5px 15px; 
+            font-size: 24px; 
+            font-family: sans-serif;
+            background-color: #2d3436; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+            vertical-align: middle;
+            transition: 0.3s;"
+            onmouseover="this.style.backgroundColor='#e63946'"
+            onmouseout="this.style.backgroundColor='#2d3436'">
+            🎵 播放
+        </button>
+	</h1>
+</header>
+<img src="media/images/heading.jpg" 
+     style="display: block; margin: 0 auto; width: 100%; max-width: 1160px; height: auto;" 
+     onerror="this.style.display='none'">
+<div class="container" id="main-content"></div>
+
+<canvas id="sketchpad"></canvas>
+
+<div class="controls">
+    <button class="icon-btn" id="pen-toggle">
+        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>
+    </button>
+    <button class="icon-btn" id="note-toggle">
+        <svg viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/></svg>
+    </button>
+    <button class="icon-btn" id="canvas-clear">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+</div>
+
+<div id="note-box">
+    <div class="note-header" id="drag-handle">
+        <span>TEACHER NOTES</span>
+        <span style="cursor:pointer" onclick="document.getElementById('note-box').style.display='none'">[X]</span>
+    </div>
+    <textarea class="note-body" placeholder="Start typing..."></textarea>
+</div>
+
+<script>
+    const paras = [
+		`1 It is possible to get an education at a university. It has been done; not often, but the fact that a proportion, however small, of college students do get a start in interested, methodical study, proves my thesis, and the following personal experience I have to offer illustrates it and shows how to get around the faculty, the other students, and the whole college system of mind-fixing. My method might lose a boy his degree, but a degree is not worth so much as the capacity and the drive to learn.`, 
+		`2 My method was hit on by accident and some instinct. I specialized. With several courses prescribed, I concentrated on the one or two that interested me most and worked intensively on my favorites. In my first two years, for example, I worked at English and political economy and read philosophy. At the beginning of my junior year I had several cinches in history. Now I liked history; I had neglected it partly because I rebelled at the way it was taught, as positive knowledge unrelated to politics, art, life, or anything else. The professors gave us chapters out of a few books to read and be quizzed on. Blessed as I was with a "bad memory," I could not commit to it anything that I did not understand and intellectually need. The bare record of the story of man, with names, dates, and irrelative events, bored me. But I had discovered in my readings of literature, philosophy, and political economy that history had light to throw upon unhistorical questions. So I proposed in my junior and senior years to specialize in history, taking all the courses required and those also that I had failed. With this in mind I listened attentively to the first introductory talk of Professor William Cary Jones on American constitutional history. He was a dull lecturer, but I noticed that, after telling us what pages of what books we must be prepared in, he listed off some other references "for those that may care to dig deeper." `,
+		`3 When the rest of the class rushed out into the sunshine, I went up to the professor and, to his surprise, asked for this memorandum. He gave it to me. Up in the library I ran through the required chapters in the two different books, and they differed on several points. Turning to the other authorities, I saw that they disagreed on the same facts and also on others. The librarian, appealed to, helped me search the bookshelves till the library closed, and then I called on Professor Jones for more references. He was astonished, invited me in, and began to approve my industry, which astonished me. I was not trying to be a good boy; I was better than that: I was a curious boy. He lent me a couple of his books, and I went off to my club to read them. They only deepened the mystery, clearing up the historical question, but leaving the answer to be dug for and written. `,
+		`4 The historians did not know! History was not a science, but a field for research, a field for me, for any young man, to explore, to make discoveries in and write a scientific report about. I was fascinated. As I went on from chapter to chapter, day after day, finding frequently essential differences of opinion and of fact, I saw more and more work to do. In this course, American constitutional history, I hunted far enough to suspect that the Fathers of the Republic who wrote our sacred Constitution of the United States not only did not, but did not want to, establish a democratic government, and I dreamed for a while—as I used as a child to play I was Napoleon or a trapper—I promised myself to write a true history of the making of the American Constitution. I did not do it; that chapter has been done or well begun since by two men: Smith of the University of Washington and Beard of Columbia. I found other events, men, and eras waiting for students. In all my other courses, in ancient, in European, and in modern history, the disagreeing authorities carried me back to the need of a fresh search for the original documents or other clinching evidence. Of course I did well in my classes. The history professors soon knew me as a student and seldom put a question to me except when the class didn't know the answer. Then Professor Jones would say, "Well, Steffens, tell them about it."`, 
+		`5 Fine. But vanity wasn't my ruling passion then. What I had was a quickening sense that I was learning a method of studying history and that every chapter of it, from the beginning of the world to the end, is crying out to be rewritten. There was something for Youth to do. `
+    
+    ];
+
+    const container = document.getElementById('main-content');
+
+    paras.forEach((p, i) => {
+        const div = document.createElement('div');
+        div.className = 'para-block';
+        const imgIdx = String(i+1).padStart(2,'0');
+        const baseName = `media/images/img_${imgIdx}`;
+		const extensions = ['.webp', '.jpg', '.jpeg', '.png', '.avif'];
+		div.innerHTML = `
+            <div class="text-wrap">
+			${extensions.map(ext => `
+			<img src="${baseName}${ext}"
+                 class="img-display"
+                 alt="Visual Resource ${i+1}"
+                 style="display: none;"
+                 onload="this.style.display='block'"
+                 onerror="this.style.display='none'">
+        `).join('')}
+                <button class="audio-trigger" onclick="playAudio(${i}+1)">${i+1}</button>
+                <p class="para-text" style="display: inline; font-size: var(--font-main); color: #333;">${p}</p>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+
+	let currentAudio = null;
+	let currentIdx = null;
+
+	function playAudio(idx) {
+		if (currentAudio && currentIdx === idx) {
+			currentAudio.pause();
+			currentAudio = null;
+			currentIdx = null;
+			return;
+		}
+
+		if (currentAudio) {
+			currentAudio.pause();
+		}
+
+		const formattedIdx = String(idx).padStart(2, '0');
+		const audioPath = `media/audio/unit1_-${formattedIdx}.mp3`;
+
+		currentAudio = new Audio(audioPath);
+		currentIdx = idx;
+		currentAudio.play().catch(() => {
+			console.log(`Audio file unit1_-${formattedIdx}.mp3 not found.`);
+		});
+	}
+
+    const canvas = document.getElementById('sketchpad');
+    const ctx = canvas.getContext('2d');
+    const penToggle = document.getElementById('pen-toggle');
+    let drawing = false;
+    let penActive = false;
+
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.onresize = resize; resize();
+
+    penToggle.onclick = () => {
+        penActive = !penActive;
+        penToggle.classList.toggle('active', penActive);
+        canvas.classList.toggle('active', penActive);
+    };
+
+    document.getElementById('canvas-clear').onclick = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    canvas.onmousedown = (e) => { if(!penActive) return; drawing = true; ctx.beginPath(); ctx.moveTo(e.clientX, e.clientY); };
+    canvas.onmousemove = (e) => { 
+        if(!drawing || !penActive) return; 
+        ctx.lineTo(e.clientX, e.clientY); 
+        ctx.strokeStyle = 'red'; ctx.lineWidth = 4; ctx.stroke(); 
+    };
+    canvas.onmouseup = () => drawing = false;
+
+    const noteBox = document.getElementById('note-box');
+    document.getElementById('note-toggle').onclick = () => {
+        noteBox.style.display = (noteBox.style.display === 'flex') ? 'none' : 'flex';
+    };
+
+    let drag = false;
+    let ox, oy;
+    const handle = document.getElementById('drag-handle');
+    handle.onmousedown = (e) => { drag = true; ox = e.clientX - noteBox.offsetLeft; oy = e.clientY - noteBox.offsetTop; };
+    window.onmousemove = (e) => { if(drag) { noteBox.style.left = (e.clientX - ox) + 'px'; noteBox.style.top = (e.clientY - oy) + 'px'; } };
+    window.onmouseup = () => drag = false;
+function playTitleAudio() {
+		// 1. 如果当前点击的是标题音频，且音频已经存在
+		if (currentAudio && currentIdx === 'title') {
+			if (currentAudio.paused) {
+				// 如果当前是暂停状态，点击则恢复播放
+				currentAudio.play().catch(() => {
+					console.log(`无法恢复播放音频 text.mp3`);
+				});
+			} else {
+				// 如果当前是播放状态，点击则暂停
+				currentAudio.pause();
+			}
+			return;
+		}
+
+		// 2. 如果当前正在播放其他段落的音频，先将其暂停
+		if (currentAudio) {
+			currentAudio.pause();
+		}
+
+		// 3. 首次点击标题音频，初始化并播放
+		const audioPath = 'media/audio/text.mp3'; 
+		currentAudio = new Audio(audioPath);
+		currentIdx = 'title';
+		currentAudio.play().catch(() => {
+			console.log(`Audio file text.mp3 not found.`);
+		});
+	}
+
+</script>
+</body>
+</html>

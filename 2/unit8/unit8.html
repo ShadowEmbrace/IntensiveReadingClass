@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 8: The Art of Storytelling - Classroom Display</title>
+    <style>
+        :root {
+            --bg-color: #fcfcf9;
+            --text-color: #222;
+            --accent-color: #e63946;
+            --btn-color: #2d3436;
+            --placeholder-bg: #f0f0eb;
+            --font-main: 32px;
+            --font-title: 60px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        header {
+            padding: 80px 40px;
+            text-align: center;
+            background: #fff;
+            border-bottom: 2px solid #eee;
+        }
+
+        h1 { font-size: var(--font-title); font-weight: bold; }
+
+        .container { max-width: 1200px; margin: 40px auto; padding: 20px; }
+
+        .para-block {
+            margin-bottom: 80px;
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            clear: both;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+		.para-block:hover {
+			background-color: #fff9db;
+			transition: background-color 0.3s ease;
+		}
+
+		.para-block:nth-child(even) {
+			background-color: #f8f9fa;
+		}
+
+        .text-wrap {
+            width: 95%;
+            font-size: var(--font-main);
+            position: relative;
+            padding-left: 100px;
+            text-align: justify;
+			line-height: 1.6;
+			overflow: visible;
+			color: #333
+        }
+
+        .audio-trigger {
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--btn-color);
+            color: white;
+            border: none;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+        .audio-trigger:hover { background: var(--accent-color); transform: scale(1.1); }
+
+        .img-display {
+		    float: right;
+			width: 35%;
+			max-width: 400px;
+			height: auto;
+			max-height: 600px;
+			object-fit: contain;
+			margin: 10px 0 15px 20px;
+			border: 1px solid #ddd;
+		}
+
+        #sketchpad {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 500;
+            pointer-events: none;
+        }
+        #sketchpad.active { pointer-events: auto; cursor: crosshair; }
+
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid var(--btn-color);
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon-btn.active { background: var(--accent-color); border-color: var(--accent-color); }
+        .icon-btn svg { width: 25px; height: 25px; }
+
+        #note-box {
+            position: fixed;
+            top: 20%;
+            left: 30%;
+            width: 500px;
+            min-height: 350px;
+            background: white;
+            border: 5px solid var(--btn-color);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            box-shadow: 20px 20px 0 rgba(0,0,0,0.1);
+        }
+        .note-header {
+            background: var(--btn-color);
+            color: white;
+            padding: 10px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+        }
+        .note-body {
+            flex-grow: 1;
+            padding: 20px;
+            font-size: 36px;
+            color: #0000FF;
+            border: none;
+            outline: none;
+            resize: both;
+        }
+    /* ========================================================
+           📱 移动端（手机）响应式适配样式
+           当屏幕宽度小于 768px 时，以下样式会自动生效，优化手机阅读体验
+           ======================================================== */
+        @media (max-width: 768px) {
+            :root {
+                --font-main: 20px;   /* 手机端正文：从大屏的 32px 缩小到舒适的 20px */
+                --font-title: 32px;  /* 手机端标题：从大屏的 60px 缩小到 32px */
+            }
+
+            header {
+                padding: 30px 15px;  /* 缩减顶部标题区域的上下留白 */
+            }
+
+            h1 {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;           /* 手机上让标题和播放按钮上下错开，避免挤在一行 */
+            }
+
+            .container {
+                margin: 10px auto;   /* 缩减网页外层上下间距 */
+                padding: 10px;       /* 缩减网页左右两侧的留空 */
+            }
+
+            .para-block {
+                margin-bottom: 25px; /* 缩减段落与段落之间的超大间距 */
+                padding: 20px 15px;  /* 缩减卡片内部的四周留白（非常关键！） */
+            }
+
+            .text-wrap {
+                width: 100%;         /* 让文字区域占满卡片，不再浪费空间 */
+                padding-left: 55px;  /* 缩减左侧音频按钮占用的空间，给文字腾地方 */
+                text-align: left;    /* 手机上建议用左对齐，两端对齐（justify）会导致单词间距忽大忽小 */
+            }
+
+            .audio-trigger {
+                width: 45px;         /* 缩小段落前面的音频按钮尺寸 */
+                height: 45px;
+                font-size: 18px;
+                top: 0;              /* 微调按钮对齐位置 */
+            }
+
+            .img-display {
+                float: none;         /* 取消图片右浮动，避免在窄屏上把文字挤成一缕 */
+                display: block;
+                width: 100%;         /* 图片在手机上独自占满一行 */
+                max-width: 100%;
+                margin: 0 0 15px 0;  /* 改为下方留空，让文字在图片下面舒服地流淌 */
+            }
+        }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Stop Telling Me to Travel Like a Local, OK?
+	<button onclick="playTitleAudio()" style="
+            margin-left: 15px; 
+            padding: 5px 15px; 
+            font-size: 24px; 
+            font-family: sans-serif;
+            background-color: #2d3436; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+            vertical-align: middle;
+            transition: 0.3s;"
+            onmouseover="this.style.backgroundColor='#e63946'"
+            onmouseout="this.style.backgroundColor='#2d3436'">
+            🎵 播放
+        </button>
+	</h1>
+</header>
+<img src= "media/images/heading.png" style="display:block; margin: 0 auto;" onerror="this.style.display='none'">
+
+<div class="container" id="main-content"></div>
+
+<canvas id="sketchpad"></canvas>
+
+<div class="controls">
+    <button class="icon-btn" id="pen-toggle">
+        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>
+    </button>
+    <button class="icon-btn" id="note-toggle">
+        <svg viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/></svg>
+    </button>
+    <button class="icon-btn" id="canvas-clear">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+</div>
+
+<div id="note-box">
+    <div class="note-header" id="drag-handle">
+        <span>TEACHER NOTES</span>
+        <span style="cursor:pointer" onclick="document.getElementById('note-box').style.display='none'">[X]</span>
+    </div>
+    <textarea class="note-body" placeholder="Start typing..."></textarea>
+</div>
+
+<script>
+    const paras = [
+        "1 In all my years of travel, from twisting off bits of pastry in gold-tinged Vienna coffee houses to stumbling around the jungle-wrapped temple ruins in Cambodia, I have relied on the condensed wisdom of those who knew those places well to find my way through abbreviated stays. I plan my trips like a cultural interloper, making sure to hit the \"only-here\" greatest hits like the tourist that I very much am. This is not the going wisdom these days.",
+        "2 If you have researched a trip in, say, the past five to ten years or so, you may have noticed a recurring and aggressive directive: TRAVEL LIKE A LOCAL! You've probably also seen the entreaty, the shaming: How to Not Look like a Tourist; How to Not Act like a Tourist; How to Not Be a Tourist.",
+        "3 On the surface, the promise is an attractive one: You're getting the inside scoop for the best places to eat and shop with none of the tourist traps. You know only the spots that those truly in the know can find. But it's all a complete farce. At best, \"Travel like a Local\" is a silly paradoxical myth; at worst, it's terrible vacation advice.",
+        "4 For one thing, locals aren't traveling. They are working. Or folding laundry or cleaning their bathrooms or packing lunches or any of the eight zillion other inane chores that somehow take up every minute of your free time when you are NOT on vacation. Locals are not spending leisurely days strolling on stunning promenades or gawking at the crank-your-neck-tall Art Deco buildings or sparkly turquoise waters lapping on fine white-sand beaches. They are making to-do lists in their heads on cramped morning commutes or scurrying between the grocery store, the dry cleaner, and the pharmacy, trying to complete enough tasks before falling into bed. The whole point of travel is to get away from the humdrum of everyday life. It is to very much not be a local.",
+        "5 Put it this way: You simply cannot travel like a local. It is a contradiction in terms. Staying at a neighborhood Airbnb in Mexico City's Roma doesn't make you a Chilango. Parisians don't nibble on buttery pastries every day for breakfast while overlooking the Seine. And rarely do New Yorkers tuck into a three-hour tasting menu on a Tuesday night. And locals certainly don't eat 17 meals in a week at some of the best—and, at times, most expensive—restaurants in town. (Perhaps they are saving up to do so when they go on their own non-local sojourn.)",
+        "6 Locals pick up takeout and watch a junky TV drama in their pajamas. They're not going to three museums and a boat tour before draining their bank account on regional textiles, which as a non-local you should definitely not miss! Neither do locals wander around a city with fresh eyes until their feet are sore. These are the unique pleasures of being a tourist.",
+        "7 Getting the most out of your visit to a place requires acknowledging both ignorance and vulnerability and that you don't know much and need some help. There's nothing wrong with that: Remedial cultural lessons are both fun and necessary. I love taking cooking classes, typically chock-full of naive tourists in dorky aprons, and market tours in different cities. Sure, I can and have visited markets without guides and enjoyed it, but having an actual expert to explain ingredients and practices I couldn't intuit on my own makes the experience all the richer.",
+        "8 More than that, being that vulnerable, ignorant non-local sometimes gets you special treatment. Some of my best travel experiences arose from a very un-local ineptitude and the kindness and hospitality shown by actual locals. In a small village in northern Thailand, a woman once closed down her coffee shop, despite my pleas not to, to drive me on her motorbike to a rice noodle factory when I merely asked her for directions. In Kyoto, when I asked about ceramic stores at a small coffee shop—because as a dumb tourist I did not know where they were—I got an invite into a couple's home to learn kintsugi, the Japanese art of repairing broken pottery with gold or silver. I've been whisked from an artisan bread bakery to a macaroon shop in Paris by friends with cheery gusto. Hospitality to visitors is a gift; embrace it with gratitude, not shame.",
+        "9 The bid to \"Travel like a Local\"—with suggestions to buy the de rigueur anorak in Copenhagen and study maps on your phone lest you stick out as a foreigner—all seems a little middle-schoolish. At the stage in life when you can book your own trip abroad, you're old enough to not worry about fitting in. (This is, of course, distinct from respecting local customs on religious and cultural dress.) One of the delicious freedoms in traveling is that no one knows you, that there is a very low likelihood that your ex-boyfriend will happen upon you covered in dust and sweat after a half day of hiking around temple ruins. You can wear a fanny pack or shoes that you don't mind muddying up. You can ask a stranger for directions.",
+        "10 Now that I think about it, acting like a tourist in your hometown—which, yes, I admit is also a contradiction in terms—seems like a better way to approach your everyday life too. Taking a bus tour through town will give you a completely different perspective. Actually visiting a museum—instead of meaning to—is way more fulfilling than sitting on your couch cruising Twitter and Instagram. I've never been to the Statue of Liberty in New York or the Emily Dickinson house in my home state of Massachusetts. It's been years since I've visited the Cloisters in Upper Manhattan and many months since I've hiked through the Mt. Holyoke range 15 minutes from the house where I grew up. That urgent tourist energy to see and do all sorts of things is far superior to the apathy of knowing something will always be there. Maybe it's best not just to travel like a tourist, but to live like one too."
+    ];
+
+    const container = document.getElementById('main-content');
+
+    paras.forEach((p, i) => {
+        const div = document.createElement('div');
+        div.className = 'para-block';
+        const imgIdx = String(i+1).padStart(2,'0');
+        const baseName = `media/images/img_${imgIdx}`;
+		const extensions = ['.webp', '.jpg', '.jpeg', '.png', '.avif'];
+		div.innerHTML = `
+            <div class="text-wrap">
+			${extensions.map(ext => `
+			<img src="${baseName}${ext}"
+                 class="img-display"
+                 alt="Visual Resource ${i+1}"
+                 style="display: none;"
+                 onload="this.style.display='block'"
+                 onerror="this.style.display='none'">
+        `).join('')}
+                <button class="audio-trigger" onclick="playAudio(${i}+1)">${i+1}</button>
+                ${p}
+            </div>
+        `;
+        container.appendChild(div);
+    });
+
+	let currentAudio = null;
+	let currentIdx = null;
+
+	function playAudio(idx) {
+		if (currentAudio && currentIdx === idx) {
+			currentAudio.pause();
+			currentAudio = null;
+			currentIdx = null;
+			return;
+		}
+
+		if (currentAudio) {
+			currentAudio.pause();
+		}
+
+		const formattedIdx = String(idx).padStart(2, '0');
+		const audioPath = `media/audio/unit8_-${formattedIdx}.mp3`;
+
+		currentAudio = new Audio(audioPath);
+		currentIdx = idx;
+		currentAudio.play().catch(() => {
+			console.log(`Audio file unit8_-${formattedIdx}.mp3 not found.`);
+		});
+	}
+
+    const canvas = document.getElementById('sketchpad');
+    const ctx = canvas.getContext('2d');
+    const penToggle = document.getElementById('pen-toggle');
+    let drawing = false;
+    let penActive = false;
+
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.onresize = resize; resize();
+
+    penToggle.onclick = () => {
+        penActive = !penActive;
+        penToggle.classList.toggle('active', penActive);
+        canvas.classList.toggle('active', penActive);
+    };
+
+    document.getElementById('canvas-clear').onclick = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    canvas.onmousedown = (e) => { if(!penActive) return; drawing = true; ctx.beginPath(); ctx.moveTo(e.clientX, e.clientY); };
+    canvas.onmousemove = (e) => { 
+        if(!drawing || !penActive) return; 
+        ctx.lineTo(e.clientX, e.clientY); 
+        ctx.strokeStyle = 'red'; ctx.lineWidth = 4; ctx.stroke(); 
+    };
+    canvas.onmouseup = () => drawing = false;
+
+    const noteBox = document.getElementById('note-box');
+    document.getElementById('note-toggle').onclick = () => {
+        noteBox.style.display = (noteBox.style.display === 'flex') ? 'none' : 'flex';
+    };
+
+    let drag = false;
+    let ox, oy;
+    const handle = document.getElementById('drag-handle');
+    handle.onmousedown = (e) => { drag = true; ox = e.clientX - noteBox.offsetLeft; oy = e.clientY - noteBox.offsetTop; };
+    window.onmousemove = (e) => { if(drag) { noteBox.style.left = (e.clientX - ox) + 'px'; noteBox.style.top = (e.clientY - oy) + 'px'; } };
+    window.onmouseup = () => drag = false;
+function playTitleAudio() {
+		// 1. 如果当前点击的是标题音频，且音频已经存在
+		if (currentAudio && currentIdx === 'title') {
+			if (currentAudio.paused) {
+				// 如果当前是暂停状态，点击则恢复播放
+				currentAudio.play().catch(() => {
+					console.log(`无法恢复播放音频 text.mp3`);
+				});
+			} else {
+				// 如果当前是播放状态，点击则暂停
+				currentAudio.pause();
+			}
+			return;
+		}
+
+		// 2. 如果当前正在播放其他段落的音频，先将其暂停
+		if (currentAudio) {
+			currentAudio.pause();
+		}
+
+		// 3. 首次点击标题音频，初始化并播放
+		const audioPath = 'media/audio/text.mp3'; 
+		currentAudio = new Audio(audioPath);
+		currentIdx = 'title';
+		currentAudio.play().catch(() => {
+			console.log(`Audio file text.mp3 not found.`);
+		});
+	}
+
+</script>
+</body>
+</html>

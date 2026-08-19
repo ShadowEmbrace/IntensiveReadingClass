@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 2: High Heels Debate - Classroom Display</title>
+    <style>
+        :root {
+            --bg-color: #fcfcf9;
+            --text-color: #222;
+            --accent-color: #e63946;
+            --btn-color: #2d3436;
+            --placeholder-bg: #f0f0eb;
+            --font-main: 32px;
+            --font-title: 60px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Times New Roman', serif; /* 适合英语教学的衬线体 */
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        header {
+            padding: 80px 40px;
+            text-align: center;
+            background: #fff;
+            border-bottom: 2px solid #eee;
+        }
+
+        h1 { font-size: var(--font-title); font-weight: bold; }
+
+        .container { max-width: 1200px; margin: 40px auto; padding: 20px; }
+
+        /* 段落块布局 */
+        .para-block {
+            margin-bottom: 150px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+		/* 鼠标悬停时的微互动 */
+		.para-block:hover {
+			background-color: #fff9db; /* 淡淡的鹅黄色，类似荧光笔高亮 */
+			transition: background-color 0.3s ease;
+		}
+        .para-block:nth-child(even) { align-items: flex-end; }
+
+        .text-wrap {
+            width: 95%;
+            font-size: var(--font-main);
+            position: relative;
+            padding-left: 100px;
+            text-align: justify;
+			line-height: 1.6;
+			overflow: visible;
+			color: #333
+        }
+
+        /* 音频数字按钮 */
+        .audio-trigger {
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--btn-color);
+            color: white;
+            border: none;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+        .audio-trigger:hover { background: var(--accent-color); transform: scale(1.1); }
+
+        /* 图片 */
+        .img-display {
+		    float: right;
+			width: 35%;
+			max-width: 400px;
+			height: auto;
+			max-height: 600px;
+			object-fit: contain;
+			margin: 10px 0 15px 20px;
+			border: 1px solid #ddd;
+			object-fit: contain;;
+		}
+		/* 修改段落块，使其变成卡片样式 */
+		.para-block {
+			margin-bottom: 80px; /* 段落之间的留白，显示出底色差异 */
+			padding: 40px;      /* 增加内边距，让文字不要挨着底色边缘 */
+			background-color: #ffffff; /* 默认底色 */
+			border-radius: 15px;      /* 圆角让视觉更柔和 */
+			box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* 淡淡的阴影增加立体感 */
+			clear: both;
+			overflow: hidden;   /* 确保包裹住内部的浮动图片 */
+		}
+
+		/* 使用交替底色：给偶数段落设置一个极浅的蓝色或灰色 */
+		.para-block:nth-child(even) {
+			background-color: #f8f9fa; /* 或者使用 #f0f7ff (淡蓝色) */
+		}
+
+        /* 画板 */
+        #sketchpad {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 500;
+            pointer-events: none;
+        }
+        #sketchpad.active { pointer-events: auto; cursor: crosshair; }
+
+        /* 工具栏 */
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid var(--btn-color);
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon-btn.active { background: var(--accent-color); border-color: var(--accent-color); }
+        .icon-btn svg { width: 25px; height: 25px; }
+
+        /* 笔记窗 */
+        #note-box {
+            position: fixed;
+            top: 20%;
+            left: 30%;
+            width: 500px;
+            min-height: 350px;
+            background: white;
+            border: 5px solid var(--btn-color);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            box-shadow: 20px 20px 0 rgba(0,0,0,0.1);
+        }
+        .note-header {
+            background: var(--btn-color);
+            color: white;
+            padding: 10px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+        }
+        .note-body {
+            flex-grow: 1;
+            padding: 20px;
+            font-size: 36px;
+            color: #0000FF; /* 蓝色字体 */
+            border: none;
+            outline: none;
+            resize: both;
+        }
+    /* ========================================================
+           📱 移动端（手机）响应式适配样式
+           当屏幕宽度小于 768px 时，以下样式会自动生效，优化手机阅读体验
+           ======================================================== */
+        @media (max-width: 768px) {
+            :root {
+                --font-main: 20px;   /* 手机端正文：从大屏的 32px 缩小到舒适的 20px */
+                --font-title: 32px;  /* 手机端标题：从大屏的 60px 缩小到 32px */
+            }
+
+            header {
+                padding: 30px 15px;  /* 缩减顶部标题区域的上下留白 */
+            }
+
+            h1 {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;           /* 手机上让标题和播放按钮上下错开，避免挤在一行 */
+            }
+
+            .container {
+                margin: 10px auto;   /* 缩减网页外层上下间距 */
+                padding: 10px;       /* 缩减网页左右两侧的留空 */
+            }
+
+            .para-block {
+                margin-bottom: 25px; /* 缩减段落与段落之间的超大间距 */
+                padding: 20px 15px;  /* 缩减卡片内部的四周留白（非常关键！） */
+            }
+
+            .text-wrap {
+                width: 100%;         /* 让文字区域占满卡片，不再浪费空间 */
+                padding-left: 55px;  /* 缩减左侧音频按钮占用的空间，给文字腾地方 */
+                text-align: left;    /* 手机上建议用左对齐，两端对齐（justify）会导致单词间距忽大忽小 */
+            }
+
+            .audio-trigger {
+                width: 45px;         /* 缩小段落前面的音频按钮尺寸 */
+                height: 45px;
+                font-size: 18px;
+                top: 0;              /* 微调按钮对齐位置 */
+            }
+
+            .img-display {
+                float: none;         /* 取消图片右浮动，避免在窄屏上把文字挤成一缕 */
+                display: block;
+                width: 100%;         /* 图片在手机上独自占满一行 */
+                max-width: 100%;
+                margin: 0 0 15px 0;  /* 改为下方留空，让文字在图片下面舒服地流淌 */
+            }
+        }    
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Nobody Wins in the Age-Old Debate over High Heels</h1>
+</header>
+<img src= "media/images/luyi.jpg" style="display:block; margin: 0 auto;" >
+
+<div class="container" id="main-content"></div>
+
+<canvas id="sketchpad"></canvas>
+
+<div class="controls">
+    <button class="icon-btn" id="pen-toggle">
+        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>
+    </button>
+    <button class="icon-btn" id="note-toggle">
+        <svg viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/></svg>
+    </button>
+    <button class="icon-btn" id="canvas-clear">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+</div>
+
+<div id="note-box">
+    <div class="note-header" id="drag-handle">
+        <span>TEACHER NOTES</span>
+        <span style="cursor:pointer" onclick="document.getElementById('note-box').style.display='none'">[X]</span>
+    </div>
+    <textarea class="note-body" placeholder="Start typing..."></textarea>
+</div>
+
+<script>
+    const paras = [
+        "1 In the 1977 edition of The Woman's Dress for Success Book by John T. Molloy (\"America's best-known clothing consultant tells what to wear and why!\"), the introduction is titled \"The Mistakes Women Make and How to Correct Them.\" What follows is 187 pages of advice on how to use clothes (don't dress sexy, never wear trousers, always wear high-heeled pumps to the office) to get male colleagues and clients to take you seriously. Then, as is often still the case now, few thought that the workplace itself might need to change, but rather that female workers must be reconfigured in order to fit into it. On the back cover there is a photo of a young woman in business clothes, not smiling, with an older man standing behind her—the author himself—his hands just about to touch her shoulders.",
+        "2 For better or worse, the high heel is now womankind's most public footwear. It is a shoe for events, display, performance, authority, and urbanity. We have endowed it with the power to transform, and ours is a culture obsessed with female transformation. In some settings and on some occasions, usually the most formal, it is even required. High heels are something like neckties for women, in that it can be harder to look both formal and female without them. Women have been compelled by their employers to wear high-heeled shoes in order to attend work and work-related functions across the career spectrum, from waitresses in Las Vegas to accountants at PricewaterhouseCoopers; in places from airplanes at 30,000 feet to seaside at the Cannes Film Festival. It's a shoe for when we're on, for ambition; for magazine covers, red carpets, award shows, boardrooms, courtrooms, parliament buildings, and debate lecterns.",
+        "3 Along with being our most public shoe, it is also considered the most feminine. Few styles in the long history of footwear have been so exclusively marked as female as the contemporary stiletto high heel.",
+        "4 To be feminine is not the same thing as being female. Femininity is a thing that is felt and seen, but also escaped and denied, or cultivated and proved. High heels can sometimes play an especially important role in the expression of an inner feminine longing or recognition. They also strike a powerful chord in the complex music of modern gender identity, with a far-reaching resonance.",
+        "5 High heels have been denounced, then defended, and then denounced again, criticized and made quasi-mandatory by the cultures. No matter how you dress as a woman, turn one way in the maze and you're rewarded, turn another and you're ambushed, or trapped. It is hard not to despair when one follows this rhetoric to its logical conclusion, which is that \"sensible\" shoes are unfeminine, and \"feminine\" shoes are not sensible, therefore to be feminine is to be without sense. We are having the same conversations about female footwear again and again, spread out over thousands of years, because the arguments are not really about fashion or culture, or even about shoes. They are political and have to do with women's role in public life.",
+        "6 When a woman attempts to assume the mantle of ultimate authority, the question of what kind of shoes she should wear can get especially complicated. During the 2016 American presidential debates, the first female nominee of a major party, Hillary Clinton, wore a pair of shoes that were no doubt the result of extreme deliberation. Flats would have been unacceptably informal for such an occasion, and so she wore heels. And yet notably high heels would have come across as too sexy and hence unserious, both for her position and her age, and so her heels were very low. They were so low, in fact, that a thick or sturdy heel would have made them almost indistinguishable from the heels on a pair of men's dress shoes, and so to communicate her femininity, the heels were also very thin. These very low, very thin heels have a name: kitten heels. These shoes were in fact the correct, perhaps even the only acceptable shoe fashion choice for Clinton in these circumstances and in that moment, to show that she was at once feminine, serious, and fashionable. Being fashionable, particularly for women, is seen as a kind of social intelligence. Yet only a female candidate would find that the most acceptable choice of clothing for a presidential debate would have the word \"kitten\" in it.",
+        "7 High heels possess a complicated appeal. There is something of the animal in them, of the talon and the claw. (And of course, the French word for high heels is les talons). I am reminded of the shoe forms that appear in the gorgeous and haunting work of Dominican-American artist Firelei Báez, where, in painting after painting, the long, spiked heels seem to grow directly out of the feet themselves. Her figures, womanly and uncontainable, balloon and sprout into shapes that are wilder than woman, oozing color, covered in tropical leaves, feathers, hair, and flowers. Instead of deciding which of Plath's anxious and tantalizing figs to choose, it is as if Báez's women have themselves become the whole tree, the whole sentient green orchard. During a significant period of her work, nearly all of her figures where feet are shown have at least one foot with a deadly heel attached, like a narrow horn, a sharpened tooth, or a stake driven into something; their feet are flexed and pointed, ready to pounce, to balance, or to dance.",
+        "8 Shoes themselves have a curious power over the imagination, long understood as stand-ins for the body and the societal self. As children, we learn through fairy tales that shoes are magical objects that can help or hinder, reward or wound, liberate or imprison. They can turn a cat into a prime minister and a serving girl into a queen. This reading lends a startling cast to the classic fairy tales—to the piercing foot pain felt by the little mermaid when she steps into the world of men, or the young girl whose red shoes won't let her stop dancing even after she no longer consents, to what Cinderella may have really lost to the prince at the ball.",
+        "9 As the summer gave way to autumn in Paris, the wave of tourists subsided, and the streets were dominated by Parisians once more. The leaves on the trees turned a dusty gold-green, then mottled brown, and then drifted down one by one to the chalky ground of the manicured parks. The neon café signs seemed to come on earlier and earlier. Whatever fear or hope I may have harbored that summer that high heels had become old news disappeared, as the City of Light dressed up for the new season. There they were: red and velvet, or velvet-gold, or leathery green; black, brown, gray, purple, patterned, white. There were spike heels and kitten heels, heels on sandals and heels on ankle boots. They were worn with dresses, slacks, skirts, shorts, jumpsuits, West African wax print ensembles, abayas, and jeans. And of course, there were flats, and oxfords, and sneakers; there were loafers and canvas slip-ons and boots and moccasins. But amidst it all, the high heel remains.",
+        "10  The story of a person's shoes is the story of her function in society, and our footprints are the marks we leave, where we've been and the direction we're going. Here, then, is the story of the most modern of women's shoes: shoes that are fantasy and real, that are worn through or brand new, that hurt or excite, that are difficult to walk in or feel like flying; that are made of ice, or glass, or crystal; that we steal; that are stolen; that bleed or bear the evidence of our bleeding. Pain, pleasure, dreams, desire, status, blood: These are the choruses in the songs of women, as we strut, dance and walk through this man-made labyrinth we call the world."
+    ];
+
+    const container = document.getElementById('main-content');
+
+    // 渲染课文
+    paras.forEach((p, i) => {
+        const div = document.createElement('div');
+        div.className = 'para-block';
+        const imgIdx = String(i).padStart(2,'0');
+        const imgPath = `media/images/img_-${imgIdx}.jpg`;
+		div.innerHTML = `
+            <div class="text-wrap">
+			<img src = "${imgPath}"
+			     class = "img-display"
+				 alt = "Visual Resource ${i+1}"
+				 onerror = "this.style.display= 'none' "
+			>
+			
+                <button class="audio-trigger" onclick="playAudio(${i})">${i+1}</button>
+                ${p}
+            </div>
+		    
+			
+			
+        `;
+        container.appendChild(div);
+    });
+
+    // 音频播放 (unit2_0.mp3, unit2_1.mp3...)
+	let currentAudio = null;
+	let currentIdx = null; // 记录当前播放的索引
+
+	function playAudio(idx) {
+    // 如果点的是正在播放的那一个，则停止并清除状态
+		if (currentAudio && currentIdx === idx) {
+			currentAudio.pause();
+			currentAudio = null;
+			currentIdx = null;
+			return;
+		}
+
+    // 停止之前的音频
+		if (currentAudio) {
+			currentAudio.pause();
+		}
+
+		const formattedIdx = String(idx).padStart(2, '0');
+		const audioPath = `media/audio/unit2_-${formattedIdx}.mp3`;
+
+		currentAudio = new Audio(audioPath);
+		currentIdx = idx;
+		currentAudio.play().catch(() => {
+			alert(`Audio file unit2_-${formattedIdx}.mp3 not found.`);
+		});
+	}
+
+    // 画板逻辑 (整合开关)
+    const canvas = document.getElementById('sketchpad');
+    const ctx = canvas.getContext('2d');
+    const penToggle = document.getElementById('pen-toggle');
+    let drawing = false;
+    let penActive = false;
+
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.onresize = resize; resize();
+
+    penToggle.onclick = () => {
+        penActive = !penActive;
+        penToggle.classList.toggle('active', penActive);
+        canvas.classList.toggle('active', penActive);
+    };
+
+    document.getElementById('canvas-clear').onclick = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    canvas.onmousedown = (e) => { if(!penActive) return; drawing = true; ctx.beginPath(); ctx.moveTo(e.clientX, e.clientY); };
+    canvas.onmousemove = (e) => { 
+        if(!drawing || !penActive) return; 
+        ctx.lineTo(e.clientX, e.clientY); 
+        ctx.strokeStyle = 'red'; ctx.lineWidth = 4; ctx.stroke(); 
+    };
+    canvas.onmouseup = () => drawing = false;
+
+    // 笔记窗逻辑
+    const noteBox = document.getElementById('note-box');
+    document.getElementById('note-toggle').onclick = () => {
+        noteBox.style.display = (noteBox.style.display === 'flex') ? 'none' : 'flex';
+    };
+
+    // 拖拽
+    let drag = false;
+    let ox, oy;
+    const handle = document.getElementById('drag-handle');
+    handle.onmousedown = (e) => { drag = true; ox = e.clientX - noteBox.offsetLeft; oy = e.clientY - noteBox.offsetTop; };
+    window.onmousemove = (e) => { if(drag) { noteBox.style.left = (e.clientX - ox) + 'px'; noteBox.style.top = (e.clientY - oy) + 'px'; } };
+    window.onmouseup = () => drag = false;
+
+</script>
+</body>
+</html>

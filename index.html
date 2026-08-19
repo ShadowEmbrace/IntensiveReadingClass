@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>英语精读</title>
+ <style>
+* { box-sizing: border-box; }
+
+:root {
+  --bg-1: #f4f7fb;
+  --bg-2: #eaf2ff;
+  --card: rgba(255, 255, 255, 0.92);
+  --primary: #2d6cdf;
+  --primary-dark: #1b4eb6;
+  --text: #1e2a3a;
+  --muted: #6a7a8d;
+  --shadow: 0 18px 48px rgba(31, 72, 141, 0.16);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  color: var(--text);
+  background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+  padding: 24px;
+}
+
+.container {
+  width: min(560px, 100%);
+  background: var(--card);
+  border: 1px solid rgba(120, 148, 196, 0.18);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+.header {
+  padding: 42px 32px 26px;
+  text-align: center;
+  background: linear-gradient(180deg, #f8fbff, #eef5ff);
+  border-bottom: 1px solid rgba(127, 147, 188, 0.15);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 3vw, 2.7rem);
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: #183b6b;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  padding: 32px 28px 20px;
+}
+
+.book-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 58px;
+  border: none;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--primary), #4f8ef7);
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.08rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  box-shadow: 0 12px 26px rgba(45, 108, 223, 0.22);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.book-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(45, 108, 223, 0.28);
+  filter: brightness(1.02);
+}
+
+.book-btn:active {
+  transform: translateY(0);
+}
+
+.footer {
+  padding: 18px 20px 22px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.8px;
+  border-top: 1px solid rgba(127, 147, 188, 0.15);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 520px) {
+  .buttons {
+       grid-template-columns: 1fr;
+  }
+
+  .header {
+       padding-top: 34px;
+  }
+}
+ </style>
+</head>
+<body>
+ <div class="container">
+<header class="header">
+  <h1>英语精读</h1>
+</header>
+
+<div class="buttons">
+  <a class="book-btn" href="./1/index1.html">《第一册》</a>
+  <a class="book-btn" href="./2/index2.html">《第二册》</a>
+</div>
+
+<div class="footer">新时代核心英语教程</div>
+ </div>
+</body>
+</html>
