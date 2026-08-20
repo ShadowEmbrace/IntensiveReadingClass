@@ -257,6 +257,12 @@ h1 {
     max-width: 600px;
     line-height: 1.5;
     border: 3px solid var(--accent-color);
+
+}
+#custom-tooltip div {
+    padding-left: 44px;
+    text-indent: -44px;
+    word-break: break-word;
 }
 
 /* 让带有解释的词汇指针变成手型，提示可点击 */

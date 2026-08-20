@@ -170,7 +170,7 @@
             console.log(`Audio file text.mp3 not found.`);
         });
     };
-    // === 自定义点击解释弹窗逻辑 ===
+    // === 自定义点击解释弹窗逻辑（包含多行换行支持） ===
     const tooltip = document.getElementById('custom-tooltip');
 
     document.addEventListener('click', (e) => {
@@ -186,8 +186,16 @@
                 target.removeAttribute('title');
             }
 
-            // 填入解释文字
-            tooltip.textContent = target.getAttribute('data-tooltip');
+            // 🌟 关键修改：获取 raw 文本并替换换行符 &#10; 为 \n
+            let rawText = target.getAttribute('data-tooltip') || '';
+            let plainText = rawText.replaceAll(/<br\s*\/?>/gi, '\n');
+            // 2. 按 \n 切分成数组，过滤掉空行（可选），并用 <div> 包裹每一行
+            let formattedText = plainText
+                .split('\n')
+                .map(line => `<div>${line}</div>`)
+                .join('');
+            // 填入转换后的换行文本
+            tooltip.innerHTML = formattedText;
             tooltip.style.display = 'block';
 
             // 获取点击元素的位置，计算弹窗弹出位置（默认显示在词汇正下方）
