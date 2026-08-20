@@ -4,268 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Reader</title>
-    <!-- 引入 Marked.js 解析 Markdown -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <style>
-        :root {
-            --bg-color: #fcfcf9;
-            --text-color: #222;
-            --accent-color: #e63946;
-            --btn-color: #2d3436;
-            --placeholder-bg: #f0f0eb;
-            --font-main: 32px;
-            --font-title: 60px;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Times New Roman', serif;
-            line-height: 1.6;
-            overflow-x: hidden;
-            padding-bottom: 100px;
-        }
-
-        header {
-            padding: 80px 40px;
-            text-align: center;
-            background: #fff;
-            border-bottom: 2px solid #eee;
-        }
-
-        h1 { font-size: var(--font-title); font-weight: bold; }
-
-        .container { max-width: 1200px; margin: 40px auto; padding: 20px; }
-
-        .para-block {
-            margin-bottom: 80px;
-            padding: 40px;
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            clear: both;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .para-block::after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-
-        .para-block:hover {
-            background-color: #fff9db;
-            transition: background-color 0.3s ease;
-        }
-
-        .para-block:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-
-        .text-wrap {
-            width: 95%;
-            font-size: var(--font-main);
-            position: relative;
-            padding-left: 100px;
-            text-align: justify;
-            line-height: 1.6;
-            overflow: visible;
-            color: #333;
-        }
-
-        /* 确保 Markdown 解析出的 <p> 正常环绕与排版 */
-        .text-wrap .para-text p {
-            display: inline;
-            font-size: inherit;
-            color: inherit;
-            line-height: inherit;
-        }
-
-        /* Markdown 解析出的短语解释与链接样式 */
-        .text-wrap abbr {
-            text-decoration: underline dotted var(--accent-color);
-            cursor: help;
-            font-weight: bold;
-            color: #b7094c;
-        }
-
-        .text-wrap a {
-            color: var(--accent-color);
-            text-decoration: none;
-            border-bottom: 2px solid var(--accent-color);
-            transition: 0.2s;
-        }
-
-        .text-wrap a:hover {
-            background-color: #ffe3e3;
-        }
-
-        .audio-trigger {
-            position: absolute;
-            left: 0;
-            top: 5px;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: var(--btn-color);
-            color: white;
-            border: none;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.3s;
-        }
-        .audio-trigger:hover { background: var(--accent-color); transform: scale(1.1); }
-
-        .img-display {
-            float: right;
-            width: 35%;
-            max-width: 400px;
-            height: auto;
-            max-height: 450px;
-            object-fit: contain;
-            margin: 5px 0 15px 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-
-        #sketchpad {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 500;
-            pointer-events: none;
-        }
-        #sketchpad.active { pointer-events: auto; cursor: crosshair; }
-
-        .controls {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            z-index: 1000;
-        }
-
-        .icon-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: white;
-            border: 4px solid var(--btn-color);
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .icon-btn.active { background: var(--accent-color); border-color: var(--accent-color); }
-        .icon-btn svg { width: 25px; height: 25px; }
-
-        #note-box {
-            position: fixed;
-            top: 20%;
-            left: 30%;
-            width: 500px;
-            min-height: 350px;
-            background: white;
-            border: 5px solid var(--btn-color);
-            z-index: 2000;
-            display: none;
-            flex-direction: column;
-            box-shadow: 20px 20px 0 rgba(0,0,0,0.1);
-        }
-        .note-header {
-            background: var(--btn-color);
-            color: white;
-            padding: 10px;
-            cursor: move;
-            display: flex;
-            justify-content: space-between;
-        }
-        .note-body {
-            flex-grow: 1;
-            padding: 20px;
-            font-size: 36px;
-            color: #0000FF;
-            border: none;
-            outline: none;
-            resize: both;
-        }
-
-        /* 📱 移动端响应式适配样式 */
-        @media (max-width: 768px) {
-            :root {
-                --font-main: 20px;
-                --font-title: 32px;
-            }
-
-            header { padding: 30px 15px; }
-
-            h1 {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
-            }
-
-            .container { margin: 10px auto; padding: 10px; }
-
-            .para-block { margin-bottom: 25px; padding: 20px 15px; }
-
-            .text-wrap {
-                width: 100%;
-                padding-left: 55px;
-                text-align: left;
-            }
-
-            .audio-trigger {
-                width: 45px;
-                height: 45px;
-                font-size: 18px;
-                top: 0;
-            }
-
-            .img-display {
-                float: none;
-                display: block;
-                width: 100%;
-                max-width: 100%;
-                margin: 0 0 15px 0;
-            }
-        }
-    </style>
+    <!-- 引入离线/本地 Marked.js 和 外部 CSS 文件 -->
+    <script src="./js/marked.min.js"></script>
+    <script src="./js/text.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
 <header>
     <h1 id="unit-title">
-        <!-- 这里的标题文字会从 text.md 第一行动态获取 -->
-        <button onclick="playTitleAudio()" style="
-            margin-left: 15px; 
-            padding: 5px 15px; 
-            font-size: 24px; 
-            font-family: sans-serif;
-            background-color: #2d3436; 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            cursor: pointer;
-            vertical-align: middle;
-            transition: 0.3s;"
-            onmouseover="this.style.backgroundColor='#e63946'"
-            onmouseout="this.style.backgroundColor='#2d3436'">
-            🎵 PLAY
-        </button>
+        <button class="btn-play-title" onclick="playTitleAudio()">🎵 PLAY</button>
     </h1>
 </header>
 <img src="media/images/heading.jpg" 
@@ -294,108 +42,73 @@
     </div>
     <textarea class="note-body" placeholder="Start typing..."></textarea>
 </div>
-
+<div id="custom-tooltip"></div>
 <script>
     const container = document.getElementById('main-content');
     const titleElement = document.getElementById('unit-title');
 
-    // 动态加载 text.md 文件
-    fetch('text.md')
-        .then(response => response.text())
-        .then(markdownText => {
-            // 按空行切分为块（第一块是标题，后面是各段落）
-            const blocks = markdownText.trim().split(/\n\s*\n/);
-            
-            // 1. 提取并渲染第一行的标题 (自动去除 Markdown 的 '#' 前缀)
-            if (blocks.length > 0) {
-                const titleText = blocks[0].replace(/^#\s*/, '');
-                
-                // 更新浏览器标签页标题
-                document.title = titleText;
+    const markdownText = window.lessonMarkdown;
+    const blocks = markdownText.trim().split(/\n\s*\n/);
 
-                // 动态渲染网页 <h1> 标题，保留播放按钮
-                titleElement.innerHTML = `${titleText}
-                    <button onclick="playTitleAudio()" style="
-                        margin-left: 15px; 
-                        padding: 5px 15px; 
-                        font-size: 24px; 
-                        font-family: sans-serif;
-                        background-color: #2d3436; 
-                        color: white; 
-                        border: none; 
-                        border-radius: 5px; 
-                        cursor: pointer;
-                        vertical-align: middle;
-                        transition: 0.3s;"
-                        onmouseover="this.style.backgroundColor='#e63946'"
-                        onmouseout="this.style.backgroundColor='#2d3436'">
-                        🎵 PLAY
-                    </button>`;
-            }
-
-            // 2. 剩余的块属于正文段落
-            const paras = blocks.slice(1);
-            renderParagraphs(paras);
-        })
-        .catch(err => {
-            console.error('无法读取 text.md 文件:', err);
-            container.innerHTML = '<p style="color:red; text-align:center;">课文文件加载失败，请检查根目录下是否存在 text.md 文件。</p>';
-        });
-
-    function renderParagraphs(paras) {
-        paras.forEach((p, i) => {
-            const div = document.createElement('div');
-            div.className = 'para-block';
-            const imgIdx = String(i+1).padStart(2,'0');
-            const baseName = `media/images/img_${imgIdx}`;
-            const extensions = ['.webp', '.jpg', '.jpeg', '.png', '.avif'];
-
-            // 使用 marked.parse() 把当前段落的 markdown 解析为 HTML
-            const parsedHtml = marked.parse(p);
-
-            // 关键逻辑：图片要在文本元素之前输出，以便 float: right 正常生效并防止错位
-            div.innerHTML = `
-                <div class="text-wrap">
-                    <button class="audio-trigger" onclick="playAudio(${i}+1)">${i+1}</button>
-                    ${extensions.map(ext => `
-                        <img src="${baseName}${ext}"
-                             class="img-display"
-                             alt="Visual Resource ${i+1}"
-                             style="display: none;"
-                             onload="this.style.display='block'"
-                             onerror="this.style.display='none'">
-                    `).join('')}
-                    <div class="para-text" style="font-size: var(--font-main); color: #333;">${parsedHtml}</div>
-                </div>
-            `;
-            container.appendChild(div);
-        });
+    if (blocks.length > 0) {
+        const titleText = blocks[0].replace(/^#\s*/, '');
+        document.title = titleText;
+        titleElement.innerHTML = `${titleText} <button onclick="playTitleAudio()">🎵 PLAY</button>`;
     }
 
-	let currentAudio = null;
-	let currentIdx = null;
+    const paras = blocks.slice(1);
+    renderParagraphs(paras);
 
-	function playAudio(idx) {
-		if (currentAudio && currentIdx === idx) {
-			currentAudio.pause();
-			currentAudio = null;
-			currentIdx = null;
-			return;
-		}
+        function renderParagraphs(paras) {
+            paras.forEach((p, i) => {
+                const div = document.createElement('div');
+                div.className = 'para-block';
+                const imgIdx = String(i+1).padStart(2,'0');
+                const baseName = `media/images/img_${imgIdx}`;
+                const extensions = ['.webp', '.jpg', '.jpeg', '.png', '.avif'];
+                const parsedHtml = marked.parse(p);
+                div.innerHTML = `
+                    <div class="text-wrap">
+                        <button class="audio-trigger" onclick="playAudio(${i}+1)">${i+1}</button>
+                        ${extensions.map(ext => `
+                            <img src="${baseName}${ext}"
+                                class="img-display"
+                                alt="Visual Resource ${i+1}"
+                                style="display: none;"
+                                onload="this.style.display='block'"
+                                onerror="this.style.display='none'">
+                        `).join('')}
+                        <div class="para-text">${parsedHtml}</div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
 
-		if (currentAudio) {
-			currentAudio.pause();
-		}
+    let currentAudio = null;
+    let currentIdx = null;
 
-		const formattedIdx = String(idx).padStart(2, '0');
-		const audioPath = `media/audio/text-${formattedIdx}.mp3`;
+    function playAudio(idx) {
+        if (currentAudio && currentIdx === idx) {
+            currentAudio.pause();
+            currentAudio = null;
+            currentIdx = null;
+            return;
+        }
 
-		currentAudio = new Audio(audioPath);
-		currentIdx = idx;
-		currentAudio.play().catch(() => {
-			console.log(`Audio file text-${formattedIdx}.mp3 not found.`);
-		});
-	}
+        if (currentAudio) {
+            currentAudio.pause();
+        }
+
+        const formattedIdx = String(idx).padStart(2, '0');
+        const audioPath = `media/audio/text-${formattedIdx}.mp3`;
+
+        currentAudio = new Audio(audioPath);
+        currentIdx = idx;
+        currentAudio.play().catch(() => {
+            console.log(`Audio file text-${formattedIdx}.mp3 not found.`);
+        });
+    }
 
     const canvas = document.getElementById('sketchpad');
     const ctx = canvas.getContext('2d');
@@ -435,28 +148,67 @@
     window.onmouseup = () => drag = false;
 
     function playTitleAudio() {
-		if (currentAudio && currentIdx === 'title') {
-			if (currentAudio.paused) {
-				currentAudio.play().catch(() => {
-					console.log(`无法恢复播放音频 text.mp3`);
-				});
-			} else {
-				currentAudio.pause();
-			}
-			return;
-		}
+        if (currentAudio && currentIdx === 'title') {
+            if (currentAudio.paused) {
+                currentAudio.play().catch(() => {
+                    console.log(`无法恢复播放音频 text.mp3`);
+                });
+            } else {
+                currentAudio.pause();
+            }
+            return;
+        }
 
-		if (currentAudio) {
-			currentAudio.pause();
-		}
+        if (currentAudio) {
+            currentAudio.pause();
+        }
 
-		const audioPath = 'media/audio/text.mp3'; 
-		currentAudio = new Audio(audioPath);
-		currentIdx = 'title';
-		currentAudio.play().catch(() => {
-			console.log(`Audio file text.mp3 not found.`);
-		});
-	}
+        const audioPath = 'media/audio/text.mp3'; 
+        currentAudio = new Audio(audioPath);
+        currentIdx = 'title';
+        currentAudio.play().catch(() => {
+            console.log(`Audio file text.mp3 not found.`);
+        });
+    };
+    // === 自定义点击解释弹窗逻辑 ===
+    const tooltip = document.getElementById('custom-tooltip');
+
+    document.addEventListener('click', (e) => {
+        // 查找是否点击了 abbr 或含有解释属性的元素
+        const target = e.target.closest('abbr[title], [data-tooltip]');
+
+        if (target) {
+            e.stopPropagation(); // 阻止冒泡，防止触发全局关闭
+
+            // 首次点击时，将 title 转存为 data-tooltip，屏蔽原生系统小提示
+            if (target.hasAttribute('title')) {
+                target.setAttribute('data-tooltip', target.getAttribute('title'));
+                target.removeAttribute('title');
+            }
+
+            // 填入解释文字
+            tooltip.textContent = target.getAttribute('data-tooltip');
+            tooltip.style.display = 'block';
+
+            // 获取点击元素的位置，计算弹窗弹出位置（默认显示在词汇正下方）
+            const rect = target.getBoundingClientRect();
+            let left = rect.left;
+            let top = rect.bottom + 10;
+
+            // 边缘防溢出处理：如果弹窗超出屏幕右侧，自动靠右对齐
+            if (left + 400 > window.innerWidth) {
+                left = window.innerWidth - 420;
+            }
+
+            tooltip.style.left = Math.max(10, left) + 'px';
+            tooltip.style.top = top + 'px';
+        } else {
+            // 点击页面其他任意位置（且不是点击弹窗本身），隐藏解释弹窗
+            if (!e.target.closest('#custom-tooltip')) {
+                tooltip.style.display = 'none';
+            }
+        }
+    });
 </script>
 </body>
 </html>

@@ -1,0 +1,26 @@
+window.lessonMarkdown = `
+# Unit 4 Should the Robots Be Taxed?    <br>by  Kumar Sachidanandam
+
+1 A video of Bill Gates suggesting that robots should be taxed is going viral in the news and social media. 
+
+2 This idea of universal income and taxing robots is gaining ground. Sometime in June, a draft report was submitted to the European Parliament that states: 
+If advanced robots start replacing human workers in large numbers, the report recommends the European Commission force their owners to pay taxes or contribute to social security. The establishment of a basic income, or guaranteed welfare program, is also suggested as a protection against human unemployment. 
+
+3 I see robots as tools that make a job easier or do things much faster or much better or much cheaper. Throughout human history, we have used various forms of tools, from stone to metal to water to air to wood to coal to oil, and to electricity to achieve transformations in our lives. During each of these stages, there were a lot of people who lost their jobs and the next generation learned new skills to stay relevant. A case in point is below: 
+Textile factories organized workers' lives much differently from craft production.  Handloom weavers worked at their own pace, with their own tools, and within their own cottages. Factories set hours of work, and the machinery within them shaped the pace of work. Factories brought workers together within one building to work on machinery that they did not own. Factories also increased the division of labor. They narrowed the number and scope of tasks. They included children and women within a common production process. 
+
+4 While weavers lost their jobs, their kids and families got their jobs in factories and in other firms. Now that the factories are getting closed and replaced with robots, factory workers' kids might become knowledge workers. But there will always be a lag and some population will be left behind. 
+
+5 The side effect of automation was the number of families and kids in our families. When muscle power was strength, the number of kids in a family, and the number of men in particular, was a sign of prosperity. However, as we went through this progress, the birth rate plummeted and it is worth watching other social trends like more single people, lower marriage rates, more married couples with no kids, etc. 
+
+6 The world is also seeing another trend! It is getting older. But an older population may not be as bad as we think. One theory is that our future generation will live in a resource-constrained world and therefore learn to conserve resources. 
+
+7 As Bill Gates argues, spare human capacity has already been put to better use to provide education and research leading to even better knowledge, health care and wealth for all of us. However, this has not been uniform as the per capita income growth has been skewed toward developed nations. 
+
+8 The biggest argument Bill Gates makes is on the taxes. As machines are replacing human workers, these robots don't get paid and this leads to the lower taxes for the government. But what we fail to see is that, this also leads to higher profits for corporations, which pay higher taxes. Also, there is a cost to making robots and investing in such technologies. This creates a different kind of job, different levels of salaries and different taxes, maybe in a different part of the country or in different parts of the world altogether. Now, that's a flashpoint. But this too shall pass. We have seen the era of boycotting machine-made fabric and automobiles when they were seen as a threat at some point. Today, they have become an essential part of our lives. 
+
+9 I hear people complaining about the speed at which these changes happen and that we are unable to provide jobs or create newer skills. But, think of the speed at which horses were replaced by rail roads, cars and trucks; the speed at which passenger ships were replaced by airlines. They must have been pretty dramatic changes in those days! These were huge job destroyers and also job creators of the other type. In all cases, those who lost their jobs did not find work in the new industry. It was a new breed of skills that found these jobs. But it took some time. These are very visible today because of the speed at which information travels today, amplifying these causes and effects. 
+
+10 In summary, I would argue that we have always been automating. I see the world as a system and when the system gets disrupted, it takes a while to get to the equilibrium and that is painful. We are going through that painful phase now and it needs empathy, compassion and social responsibility. 
+
+`;

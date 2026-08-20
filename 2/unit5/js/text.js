@@ -1,4 +1,5 @@
-# Unit 5 The Guide to Being a Foodie Without Being Culturally Appropriative    by Rachel Kuo
+window.lessonMarkdown = `
+# Unit 5 The Guide to Being a Foodie Without Being Culturally Appropriative    <br>by Rachel Kuo
 
 
 
@@ -41,3 +42,5 @@
 19 However, it's critical for us to reflect on how we perceive the cultures that we're consuming and think about the relationships between food, people, and power. 
 
 20 Colonization and gentrification are directly related to the appropriation of food. We need to begin educating ourselves on issues that impact the communities that we're getting our meals from. 
+
+`;

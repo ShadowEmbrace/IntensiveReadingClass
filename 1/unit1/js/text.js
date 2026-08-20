@@ -1,4 +1,5 @@
-# Unit 1 I Become a Student by Lincoln Steffens
+window.lessonMarkdown = `
+# Unit 1 I Become a Student <br>by Lincoln Steffens
 
 1 It is possible to get an education at a university. It has been done; not often, but the fact that a proportion, however small, of college students do get a start in interested, methodical study, proves my thesis, and the following personal experience I have to offer illustrates it and shows how to get around the faculty, the other students, and the whole college system of mind-fixing. My method might lose a boy his <abbr title="学位：大学颁发的学术证书">degree</abbr>, but a degree is not worth so much as the capacity and the drive to learn.
 
@@ -9,3 +10,5 @@
 4 The historians did not know! History was not a science, but a field for research, a field for me, for any young man, to explore, to make discoveries in and write a scientific report about. I was fascinated. As I went on from chapter to chapter, day after day, finding frequently essential differences of opinion and of fact, I saw more and more work to do. In this course, American constitutional history, I hunted far enough to suspect that the Fathers of the Republic who wrote our sacred Constitution of the United States not only did not, but did not want to, establish a democratic government, and I dreamed for a while—as I used as a child to play I was Napoleon or a trapper—I promised myself to write a true history of the making of the American Constitution. I did not do it; that chapter has been done or well begun since by two men: Smith of the University of Washington and <abbr title="查尔斯·比尔德 (Charles A. Beard)，美国著名历史学家">Beard</abbr> of Columbia. I found other events, men, and eras waiting for students. In all my other courses, in ancient, in European, and in modern history, the disagreeing authorities carried me back to the need of a fresh search for the original documents or other clinching evidence. Of course I did well in my classes. The history professors soon knew me as a student and seldom put a question to me except when the class didn't know the answer. Then Professor Jones would say, "Well, Steffens, tell them about it."
 
 5 Fine. But vanity wasn't my ruling passion then. What I had was a quickening sense that I was learning a method of studying history and that every chapter of it, from the beginning of the world to the end, is crying out to be rewritten. There was something for Youth to do.
+
+`;
