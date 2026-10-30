@@ -83,6 +83,8 @@
                 const div = document.createElement('div');
                 div.className = 'para-block';
                 const imgIdx = String(i+1).padStart(2,'0');
+                // 图片版本号：只需改一次冲掉历史缓存，之后由 nginx 的 no-cache 接管
+                const imgVer = '20261030';
                 const baseName = `media/images/img_${imgIdx}`;
                 const extensions = ['.webp', '.jpg', '.jpeg', '.png', '.avif'];
                 const parsedHtml = marked.parse(p);
@@ -90,7 +92,7 @@
                     <div class="text-wrap">
                         <button class="audio-trigger" onclick="playAudio(${i}+1)">${i+1}</button>
                         ${extensions.map(ext => `
-                            <img src="${baseName}${ext}"
+                            <img src="${baseName}${ext}?v=${imgVer}"
                                 class="img-display"
                                 alt="Visual Resource ${i+1}"
                                 style="display: none;"
