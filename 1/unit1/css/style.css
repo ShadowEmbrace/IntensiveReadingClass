@@ -174,7 +174,8 @@ h1 {
 
 #sketchpad.active { 
     pointer-events: auto; 
-    cursor: crosshair; 
+    cursor: crosshair;
+    touch-action: none;            /* 触摸屏/手写笔绘制时不触发页面滚动 */
 }
 
 .controls {

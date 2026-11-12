@@ -145,13 +145,50 @@
 
     document.getElementById('canvas-clear').onclick = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    canvas.onmousedown = (e) => { if(!penActive) return; drawing = true; ctx.beginPath(); ctx.moveTo(e.clientX, e.clientY); };
-    canvas.onmousemove = (e) => { 
-        if(!drawing || !penActive) return; 
-        ctx.lineTo(e.clientX, e.clientY); 
-        ctx.strokeStyle = 'red'; ctx.lineWidth = 4; ctx.stroke(); 
-    };
-    canvas.onmouseup = () => drawing = false;
+    // === 画线：同时支持鼠标、触摸屏手指与手写笔（Pointer Events） ===
+    let activePointerId = null;
+
+    function applyStrokeStyle() {
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+    }
+
+    canvas.addEventListener('pointerdown', (e) => {
+        if (!penActive) return;
+        if (activePointerId !== null) return;   // 只跟第一根手指/笔，避免多指乱画
+        activePointerId = e.pointerId;
+        drawing = true;
+        try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+        applyStrokeStyle();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX, e.clientY);
+        ctx.lineTo(e.clientX + 0.01, e.clientY + 0.01);  // 轻点也留一个点
+        ctx.stroke();
+        e.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('pointermove', (e) => {
+        if (!drawing || !penActive || e.pointerId !== activePointerId) return;
+        e.preventDefault();                     // 触摸时阻止页面跟着滚动
+        const events = (e.getCoalescedEvents && e.getCoalescedEvents().length) ? e.getCoalescedEvents() : [e];
+        for (const ev of events) {
+            ctx.lineTo(ev.clientX, ev.clientY);
+        }
+        ctx.stroke();
+    }, { passive: false });
+
+    function endStroke(e) {
+        if (activePointerId !== null && e.pointerId !== activePointerId) return;
+        drawing = false;
+        if (activePointerId !== null && canvas.hasPointerCapture && canvas.hasPointerCapture(activePointerId)) {
+            try { canvas.releasePointerCapture(activePointerId); } catch (err) {}
+        }
+        activePointerId = null;
+    }
+    canvas.addEventListener('pointerup', endStroke);
+    canvas.addEventListener('pointercancel', endStroke);
 
     const noteBox = document.getElementById('note-box');
     document.getElementById('note-toggle').onclick = () => {
