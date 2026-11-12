@@ -83,7 +83,7 @@
                 div.className = 'para-block';
                 const imgIdx = String(i+1).padStart(2,'0');
                 const baseName = `media/images/img_${imgIdx}`;
-                const extensions = ['.webp', '.jpg', '.jpeg', '.png', '.avif'];
+                const extensions = ['.jpg', '.svg'];
                 const parsedHtml = marked.parse(p);
                 div.innerHTML = `
                     <div class="text-wrap">
