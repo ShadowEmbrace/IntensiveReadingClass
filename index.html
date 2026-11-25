@@ -3,19 +3,19 @@
 <head>
  <meta charset="UTF-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>英语精读</title>
+ <title>英语精读 · 课堂教学</title>
  <style>
 * { box-sizing: border-box; }
 
 :root {
-  --bg-1: #f4f7fb;
-  --bg-2: #eaf2ff;
-  --card: rgba(255, 255, 255, 0.92);
-  --primary: #2d6cdf;
-  --primary-dark: #1b4eb6;
-  --text: #1e2a3a;
-  --muted: #6a7a8d;
-  --shadow: 0 18px 48px rgba(31, 72, 141, 0.16);
+  --bg-1: #eef3fb;
+  --bg-2: #dde9fc;
+  --card: rgba(255, 255, 255, 0.96);
+  --primary: #1d4ed8;
+  --primary-dark: #1e3a8a;
+  --text: #111827;
+  --muted: #4b5563;
+  --shadow: 0 24px 60px rgba(24, 59, 107, 0.16);
 }
 
 body {
@@ -24,65 +24,85 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
   color: var(--text);
   background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
-  padding: 24px;
+  padding: clamp(16px, 3vw, 48px);
 }
 
 .container {
-  width: min(560px, 100%);
+  width: min(920px, 100%);
   background: var(--card);
-  border: 1px solid rgba(120, 148, 196, 0.18);
-  border-radius: 28px;
+  border: 1px solid rgba(120, 148, 196, 0.22);
+  border-radius: 32px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(6px);
   overflow: hidden;
 }
 
 .header {
-  padding: 42px 32px 26px;
+  padding: clamp(36px, 5vw, 64px) clamp(24px, 4vw, 48px) clamp(28px, 4vw, 44px);
   text-align: center;
-  background: linear-gradient(180deg, #f8fbff, #eef5ff);
-  border-bottom: 1px solid rgba(127, 147, 188, 0.15);
+  background: linear-gradient(180deg, #1e3a5f, #172e4d);
+  color: #ffffff;
 }
 
 h1 {
   margin: 0;
-  font-size: clamp(2rem, 3vw, 2.7rem);
-  letter-spacing: 2px;
+  font-size: clamp(2.4rem, 4.8vw, 4.2rem);
+  letter-spacing: 3px;
   font-weight: 700;
-  color: #183b6b;
+}
+
+.subtitle {
+  margin: 14px 0 0;
+  font-size: clamp(1.1rem, 2vw, 1.65rem);
+  color: rgba(255, 255, 255, 0.86);
+  letter-spacing: 1px;
 }
 
 .buttons {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  padding: 32px 28px 20px;
+  gap: clamp(18px, 3vw, 32px);
+  padding: clamp(28px, 4vw, 52px);
 }
 
 .book-btn {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 58px;
+  gap: 10px;
+  min-height: clamp(130px, 18vh, 200px);
+  padding: 28px 24px;
   border: none;
-  border-radius: 18px;
-  background: linear-gradient(135deg, var(--primary), #4f8ef7);
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--primary), #3b82f6);
   color: #fff;
   text-decoration: none;
-  font-size: 1.08rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  box-shadow: 0 12px 26px rgba(45, 108, 223, 0.22);
+  box-shadow: 0 14px 32px rgba(29, 78, 216, 0.24);
   transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 
-.book-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 30px rgba(45, 108, 223, 0.28);
-  filter: brightness(1.02);
+.book-title {
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.book-meta {
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.book-btn:hover,
+.book-btn:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(29, 78, 216, 0.32);
+  filter: brightness(1.04);
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
 }
 
 .book-btn:active {
@@ -90,38 +110,41 @@ h1 {
 }
 
 .footer {
-  padding: 18px 20px 22px;
+  padding: 20px 28px 24px;
   text-align: center;
   color: var(--muted);
-  font-size: 0.72rem;
-  letter-spacing: 0.8px;
-  border-top: 1px solid rgba(127, 147, 188, 0.15);
-  background: rgba(255, 255, 255, 0.6);
+  font-size: clamp(0.95rem, 1.3vw, 1.2rem);
+  letter-spacing: 1px;
+  border-top: 1px solid rgba(127, 147, 188, 0.18);
+  background: rgba(248, 250, 252, 0.9);
 }
 
-@media (max-width: 520px) {
+@media (max-width: 640px) {
   .buttons {
-       grid-template-columns: 1fr;
-  }
-
-  .header {
-       padding-top: 34px;
+    grid-template-columns: 1fr;
   }
 }
  </style>
 </head>
 <body>
  <div class="container">
-<header class="header">
-  <h1>英语精读</h1>
-</header>
+  <header class="header">
+    <h1>英语精读</h1>
+    <p class="subtitle">新时代核心英语综合教程 · 课堂演示</p>
+  </header>
 
-<div class="buttons">
-  <a class="book-btn" href="./1/index1.html">《第一册》</a>
-  <a class="book-btn" href="./2/index2.html">《第二册》</a>
-</div>
+  <div class="buttons">
+    <a class="book-btn" href="./1/index1.html">
+      <span class="book-title">《第一册》</span>
+      <span class="book-meta">Book I · Unit 1 / 4 / 7</span>
+    </a>
+    <a class="book-btn" href="./2/index2.html">
+      <span class="book-title">《第二册》</span>
+      <span class="book-meta">Book II · Unit 2 / 5 / 8</span>
+    </a>
+  </div>
 
-<div class="footer">新时代核心英语教程</div>
+  <div class="footer">新时代核心英语教程 · 点击选择教材分册</div>
  </div>
 </body>
 </html>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Reader</title>
+
     <!-- 引入离线/本地 Marked.js 和 外部 CSS 文件 -->
     <script src="./js/marked.min.js"></script>
     <script src="./js/text.js"></script>
@@ -11,17 +12,47 @@
 </head>
 <body>
 
+<nav id="top-bar" aria-label="课堂控制栏">
+    <div class="top-bar-left">
+        <a class="tb-btn" href="../index2.html" title="返回单元目录">← 目录</a>
+        <span class="top-bar-title" id="top-bar-title"></span>
+    </div>
+    <div class="top-bar-center">
+        <select class="slide-jump-select" id="slide-jump" aria-label="选择幻灯片"></select>
+    </div>
+    <div class="top-bar-right">
+        <button class="tb-btn" id="mode-toggle" type="button" title="切换幻灯片 / 滚动模式 (快捷键 S)">📺 PPT 模式</button>
+        <button class="tb-btn" id="font-dec" type="button" title="缩小字号 (快捷键 -)">A-</button>
+        <span class="font-size-badge" id="font-size-label">42px</span>
+        <button class="tb-btn" id="font-inc" type="button" title="放大字号 (快捷键 +)">A+</button>
+        <button class="tb-btn" id="font-family-toggle" type="button" title="切换衬线 / 无衬线字体">Aa 无衬线</button>
+        <button class="tb-btn" id="fullscreen-toggle" type="button" title="全屏显示 (快捷键 F)">⛶ 全屏</button>
+    </div>
+</nav>
+
 <header>
     <h1 id="unit-title">
-        <button class="btn-play-title" onclick="playTitleAudio()">🎵 PLAY</button>
+        <button class="btn-play-title" id="btn-play-title" type="button" onclick="playTitleAudio()">🎵 PLAY</button>
     </h1>
+    <div class="cover-start-wrap">
+        <button class="btn-start-lesson" id="btn-start-lesson" type="button">开始精读 →</button>
+    </div>
 </header>
-<img src="media/images/heading.jpg" 
-     style="display: block; margin: 0 auto; width: 100%; max-width: 1160px; height: auto;" 
-     onerror="this.style.display='none'">
+
+<div class="heading-banner">
+    <img id="heading-img" alt="Unit Heading Visual">
+</div>
+
 <div class="container" id="main-content"></div>
 
+<div id="slide-nav" aria-label="幻灯片翻页">
+    <button class="slide-nav-btn" id="slide-prev" type="button">← 上一段</button>
+    <span class="slide-counter" id="slide-counter">封面</span>
+    <button class="slide-nav-btn" id="slide-next" type="button">下一段 →</button>
+</div>
+
 <canvas id="sketchpad"></canvas>
+
 <script>
   // 兼容旧版浏览器的 .at() polyfill
   if (!Array.prototype.at) {
@@ -41,137 +72,463 @@
     };
   }
 </script>
+
 <div class="controls">
-    <button class="icon-btn" id="pen-toggle">
+    <div class="pen-colors" id="pen-colors">
+        <button class="color-dot selected" type="button" data-color="#e11d48" style="background:#e11d48" title="红色画笔"></button>
+        <button class="color-dot" type="button" data-color="#1d4ed8" style="background:#1d4ed8" title="蓝色画笔"></button>
+        <button class="color-dot" type="button" data-color="#d97706" style="background:#f59e0b" title="金黄画笔"></button>
+    </div>
+    <button class="icon-btn" id="pen-toggle" type="button" title="画笔标注 (快捷键 D)">
         <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>
     </button>
-    <button class="icon-btn" id="note-toggle">
-        <svg viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/></svg>
-    </button>
-    <button class="icon-btn" id="canvas-clear">
+    <button class="icon-btn" id="canvas-clear" type="button" title="清除画布 (快捷键 C)">
         <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+    <button class="icon-btn" id="note-toggle" type="button" title="教师便签 (快捷键 N)">
+        <svg viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/></svg>
     </button>
 </div>
 
 <div id="note-box">
     <div class="note-header" id="drag-handle">
         <span>TEACHER NOTES</span>
-        <span style="cursor:pointer" onclick="document.getElementById('note-box').style.display='none'">[X]</span>
+        <div class="note-header-actions">
+            <button class="note-action-btn" id="note-clear" type="button">清空</button>
+            <button class="note-action-btn" id="note-close" type="button">关闭</button>
+        </div>
     </div>
-    <textarea class="note-body" placeholder="Start typing..."></textarea>
+    <textarea class="note-body" id="note-body" placeholder="课堂板书 / 词汇笔记..."></textarea>
 </div>
-<div id="custom-tooltip"></div>
+
+<div id="custom-tooltip" role="dialog" aria-live="polite">
+    <button class="tooltip-close" id="tooltip-close" type="button" aria-label="关闭解释">×</button>
+    <div id="custom-tooltip-body"></div>
+</div>
+
+<div id="img-lightbox" aria-label="图片放大预览">
+    <img id="img-lightbox-target" src="" alt="Enlarged Visual">
+</div>
+
 <script>
+    const UNIT_CONFIG = {
+        imgExtensions: ['.webp', '.jpg', '.jpeg', '.png', '.avif'],
+        headingExtensions: ['.jpg', '.png', '.webp', '.jpeg', '.avif'],
+        imgVerSuffix: ''
+    };
+
     const container = document.getElementById('main-content');
     const titleElement = document.getElementById('unit-title');
+    const topBarTitle = document.getElementById('top-bar-title');
+    const headingImg = document.getElementById('heading-img');
 
-    const markdownText = window.lessonMarkdown;
+    function loadFirstImage(imgEl, baseName, extensions, versionSuffix, onSuccess) {
+        let idx = 0;
+        function tryNext() {
+            if (idx >= extensions.length) {
+                imgEl.style.display = 'none';
+                return;
+            }
+            imgEl.src = baseName + extensions[idx] + versionSuffix;
+            idx++;
+        }
+        imgEl.onload = () => {
+            imgEl.style.display = 'block';
+            if (onSuccess) onSuccess(imgEl);
+        };
+        imgEl.onerror = tryNext;
+        tryNext();
+    }
+
+    loadFirstImage(headingImg, 'media/images/heading', UNIT_CONFIG.headingExtensions, UNIT_CONFIG.imgVerSuffix);
+
+    const markdownText = window.lessonMarkdown || '';
     const blocks = markdownText.trim().split(/\n\s*\n/);
+    let paras = [];
 
     if (blocks.length > 0) {
         const titleText = blocks[0].replace(/^#\s*/, '');
-        document.title = titleText;
-        titleElement.innerHTML = `${titleText} <button onclick="playTitleAudio()">🎵 PLAY</button>`;
+        const cleanTitle = titleText.replace(/\s*<br\s*\/?>\s*/gi, ' · ').replace(/<[^>]+>/g, '').trim();
+        document.title = cleanTitle;
+        topBarTitle.textContent = cleanTitle;
+        titleElement.innerHTML = `${titleText} <button class="btn-play-title" id="btn-play-title" type="button" onclick="playTitleAudio()">🎵 全文</button>`;
+        paras = blocks.slice(1);
     }
 
-    const paras = blocks.slice(1);
+    function safeStorageGet(key) {
+        try { return localStorage.getItem(key); } catch (e) { return null; }
+    }
+    function safeStorageSet(key, val) {
+        try { localStorage.setItem(key, val); } catch (e) {}
+    }
+    function safeStorageRemove(key) {
+        try { localStorage.removeItem(key); } catch (e) {}
+    }
+
+    const paraElements = [];
     renderParagraphs(paras);
 
-        function renderParagraphs(paras) {
-            paras.forEach((p, i) => {
-                const div = document.createElement('div');
-                div.className = 'para-block';
-                const imgIdx = String(i+1).padStart(2,'0');
-                const baseName = `media/images/img_${imgIdx}`;
-                const extensions = ['.webp', '.jpg', '.jpeg', '.png', '.avif'];
-                const parsedHtml = marked.parse(p);
-                div.innerHTML = `
-                    <div class="text-wrap">
-                        <button class="audio-trigger" onclick="playAudio(${i}+1)">${i+1}</button>
-                        ${extensions.map(ext => `
-                            <img src="${baseName}${ext}"
-                                class="img-display"
-                                alt="Visual Resource ${i+1}"
-                                style="display: none;"
-                                onload="this.style.display='block'"
-                                onerror="this.style.display='none'">
-                        `).join('')}
-                        <div class="para-text">${parsedHtml}</div>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
+    function renderParagraphs(parasList) {
+        parasList.forEach((p, i) => {
+            const div = document.createElement('div');
+            div.className = 'para-block';
+            div.dataset.paraIndex = String(i + 1);
 
+            const parsedHtml = marked.parse(p);
+            div.innerHTML = `
+                <div class="text-wrap">
+                    <button class="audio-trigger" type="button" data-idx="${i + 1}" onclick="playAudio(${i + 1})" title="播放第 ${i + 1} 段音频">${i + 1}</button>
+                    <img class="img-display" alt="Visual Resource ${i + 1}" style="display: none;">
+                    <div class="para-text">${parsedHtml}</div>
+                </div>
+            `;
+
+            const imgEl = div.querySelector('.img-display');
+            const imgIdx = String(i + 1).padStart(2, '0');
+            loadFirstImage(imgEl, `media/images/img_${imgIdx}`, UNIT_CONFIG.imgExtensions, UNIT_CONFIG.imgVerSuffix, () => {
+                div.classList.add('has-image');
+            });
+
+            container.appendChild(div);
+            paraElements.push(div);
+        });
+    }
+
+    // === 音频播放与视觉状态同步 ===
     let currentAudio = null;
     let currentIdx = null;
 
+    function clearAudioUI() {
+        const titleBtn = document.getElementById('btn-play-title');
+        if (titleBtn) {
+            titleBtn.classList.remove('playing');
+            titleBtn.textContent = '🎵 全文';
+        }
+        document.querySelectorAll('.audio-trigger.playing').forEach(btn => {
+            btn.classList.remove('playing');
+            btn.textContent = btn.dataset.idx;
+        });
+        document.querySelectorAll('.para-block.is-active').forEach(el => el.classList.remove('is-active'));
+    }
+
+    function setAudioUI(idx, isPlaying) {
+        clearAudioUI();
+        if (!isPlaying) return;
+        if (idx === 'title') {
+            const titleBtn = document.getElementById('btn-play-title');
+            if (titleBtn) {
+                titleBtn.classList.add('playing');
+                titleBtn.textContent = '⏸ 暂停';
+            }
+        } else {
+            const block = paraElements[idx - 1];
+            if (block) {
+                block.classList.add('is-active');
+                const btn = block.querySelector('.audio-trigger');
+                if (btn) {
+                    btn.classList.add('playing');
+                    btn.textContent = '⏸';
+                }
+            }
+        }
+    }
+
     function playAudio(idx) {
         if (currentAudio && currentIdx === idx) {
-            currentAudio.pause();
-            currentAudio = null;
-            currentIdx = null;
+            if (currentAudio.paused) {
+                currentAudio.play().then(() => setAudioUI(idx, true)).catch(() => {});
+            } else {
+                currentAudio.pause();
+                setAudioUI(idx, false);
+            }
             return;
         }
 
         if (currentAudio) {
             currentAudio.pause();
         }
+        clearAudioUI();
 
         const formattedIdx = String(idx).padStart(2, '0');
         const audioPath = `media/audio/text-${formattedIdx}.mp3`;
-
-        currentAudio = new Audio(audioPath);
+        const audio = new Audio(audioPath);
+        currentAudio = audio;
         currentIdx = idx;
-        currentAudio.play().catch(() => {
-            console.log(`Audio file text-${formattedIdx}.mp3 not found.`);
+
+        audio.addEventListener('ended', () => {
+            if (currentAudio === audio) {
+                currentAudio = null;
+                currentIdx = null;
+                clearAudioUI();
+            }
         });
+
+        audio.play()
+            .then(() => setAudioUI(idx, true))
+            .catch(() => {
+                clearAudioUI();
+                console.log(`Audio file text-${formattedIdx}.mp3 not found.`);
+            });
     }
 
+    function playTitleAudio() {
+        if (currentAudio && currentIdx === 'title') {
+            if (currentAudio.paused) {
+                currentAudio.play().then(() => setAudioUI('title', true)).catch(() => {
+                    console.log('无法恢复播放音频 text.mp3');
+                });
+            } else {
+                currentAudio.pause();
+                setAudioUI('title', false);
+            }
+            return;
+        }
+
+        if (currentAudio) {
+            currentAudio.pause();
+        }
+        clearAudioUI();
+
+        const audio = new Audio('media/audio/text.mp3');
+        currentAudio = audio;
+        currentIdx = 'title';
+
+        audio.addEventListener('ended', () => {
+            if (currentAudio === audio) {
+                currentAudio = null;
+                currentIdx = null;
+                clearAudioUI();
+            }
+        });
+
+        audio.play()
+            .then(() => setAudioUI('title', true))
+            .catch(() => {
+                clearAudioUI();
+                console.log('Audio file text.mp3 not found.');
+            });
+    }
+
+    // === 课堂字号 / 字体调节（持久化保存） ===
+    const isMobileViewport = () => window.innerWidth <= 768;
+    const fontKey = () => isMobileViewport() ? 'irc_font_mobile' : 'irc_font_desktop';
+    const defaultFontSize = () => isMobileViewport() ? 22 : 42;
+    let currentFontSize = parseInt(safeStorageGet(fontKey()), 10) || defaultFontSize();
+
+    const fontSizeLabel = document.getElementById('font-size-label');
+    function applyFontSize(size) {
+        currentFontSize = Math.min(76, Math.max(18, size));
+        document.documentElement.style.setProperty('--font-main', currentFontSize + 'px');
+        fontSizeLabel.textContent = currentFontSize + 'px';
+        safeStorageSet(fontKey(), String(currentFontSize));
+    }
+    applyFontSize(currentFontSize);
+
+    document.getElementById('font-dec').onclick = () => applyFontSize(currentFontSize - 4);
+    document.getElementById('font-inc').onclick = () => applyFontSize(currentFontSize + 4);
+
+    const fontFamilyBtn = document.getElementById('font-family-toggle');
+    let useSans = safeStorageGet('irc_font_sans') === '1';
+    function applyFontFamily() {
+        document.body.classList.toggle('font-sans', useSans);
+        fontFamilyBtn.classList.toggle('active', useSans);
+        fontFamilyBtn.textContent = useSans ? 'Aa 衬线' : 'Aa 无衬线';
+    }
+    applyFontFamily();
+    fontFamilyBtn.onclick = () => {
+        useSans = !useSans;
+        safeStorageSet('irc_font_sans', useSans ? '1' : '0');
+        applyFontFamily();
+    };
+
+    // === 全屏控制 ===
+    const fullscreenBtn = document.getElementById('fullscreen-toggle');
+    function updateFullscreenBtn() {
+        const isFull = !!document.fullscreenElement;
+        fullscreenBtn.classList.toggle('active', isFull);
+        fullscreenBtn.textContent = isFull ? '✕ 退出全屏' : '⛶ 全屏';
+    }
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen?.().catch(() => {});
+        } else {
+            document.exitFullscreen?.().catch(() => {});
+        }
+    }
+    fullscreenBtn.onclick = toggleFullscreen;
+    document.addEventListener('fullscreenchange', updateFullscreenBtn);
+
+    // === PPT 幻灯片模式 & 滚动模式切换 ===
+    const modeToggleBtn = document.getElementById('mode-toggle');
+    const slideJump = document.getElementById('slide-jump');
+    const slideCounter = document.getElementById('slide-counter');
+    const slidePrevBtn = document.getElementById('slide-prev');
+    const slideNextBtn = document.getElementById('slide-next');
+    const startLessonBtn = document.getElementById('btn-start-lesson');
+
+    let isSlideMode = safeStorageGet('irc_view_mode') === 'slide';
+    let slideIndex = 0; // 0 = 封面, 1..paras.length = 各段落
+
+    function buildSlideSelect() {
+        slideJump.innerHTML = '';
+        const coverOpt = document.createElement('option');
+        coverOpt.value = '0';
+        coverOpt.textContent = `封面 (共 ${paraElements.length} 段)`;
+        slideJump.appendChild(coverOpt);
+        paraElements.forEach((_, idx) => {
+            const opt = document.createElement('option');
+            opt.value = String(idx + 1);
+            opt.textContent = `第 ${idx + 1} 段 / 共 ${paraElements.length} 段`;
+            slideJump.appendChild(opt);
+        });
+    }
+    buildSlideSelect();
+
+    function detectVisibleParaIndex() {
+        if (window.scrollY < 180) return 0;
+        const targetY = window.innerHeight * 0.35;
+        let bestIdx = 1;
+        let bestDist = Infinity;
+        paraElements.forEach((el, idx) => {
+            const rect = el.getBoundingClientRect();
+            const dist = Math.abs(rect.top - targetY);
+            if (dist < bestDist) {
+                bestDist = dist;
+                bestIdx = idx + 1;
+            }
+        });
+        return bestIdx;
+    }
+
+    function renderSlideView() {
+        hideTooltip();
+        document.body.classList.toggle('slide-mode', isSlideMode);
+        modeToggleBtn.classList.toggle('active', isSlideMode);
+        modeToggleBtn.textContent = isSlideMode ? '📜 滚动阅读' : '📺 PPT 模式';
+
+        if (!isSlideMode) {
+            document.body.classList.remove('slide-cover');
+            paraElements.forEach(el => el.classList.remove('slide-current'));
+            return;
+        }
+
+        slideIndex = Math.max(0, Math.min(paraElements.length, slideIndex));
+        document.body.classList.toggle('slide-cover', slideIndex === 0);
+
+        paraElements.forEach((el, idx) => {
+            el.classList.toggle('slide-current', idx + 1 === slideIndex);
+        });
+
+        slideJump.value = String(slideIndex);
+        slideCounter.textContent = slideIndex === 0
+            ? `封面 / ${paraElements.length}`
+            : `${slideIndex} / ${paraElements.length}`;
+        slidePrevBtn.disabled = slideIndex <= 0;
+        slideNextBtn.disabled = slideIndex >= paraElements.length;
+        window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+
+    function goToSlide(nextIdx) {
+        slideIndex = Math.max(0, Math.min(paraElements.length, nextIdx));
+        renderSlideView();
+    }
+
+    modeToggleBtn.onclick = () => {
+        if (!isSlideMode) {
+            slideIndex = detectVisibleParaIndex();
+            isSlideMode = true;
+            safeStorageSet('irc_view_mode', 'slide');
+            renderSlideView();
+        } else {
+            const targetPara = slideIndex > 0 ? paraElements[slideIndex - 1] : null;
+            isSlideMode = false;
+            safeStorageSet('irc_view_mode', 'scroll');
+            renderSlideView();
+            if (targetPara) {
+                setTimeout(() => targetPara.scrollIntoView({ behavior: 'smooth', block: 'start' }), 30);
+            }
+        }
+    };
+
+    slidePrevBtn.onclick = () => goToSlide(slideIndex - 1);
+    slideNextBtn.onclick = () => goToSlide(slideIndex + 1);
+    slideJump.onchange = (e) => goToSlide(parseInt(e.target.value, 10) || 0);
+    if (startLessonBtn) {
+        startLessonBtn.onclick = () => goToSlide(1);
+    }
+
+    // === 画笔批注（支持鼠标、触摸屏手指与手写笔） ===
     const canvas = document.getElementById('sketchpad');
     const ctx = canvas.getContext('2d');
     const penToggle = document.getElementById('pen-toggle');
+    const penColorsBar = document.getElementById('pen-colors');
     let drawing = false;
     let penActive = false;
+    let penColor = '#e11d48';
 
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    window.onresize = resize; resize();
+    function resizeCanvasPreserve() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        if (canvas.width > 0 && canvas.height > 0) {
+            const temp = document.createElement('canvas');
+            temp.width = canvas.width;
+            temp.height = canvas.height;
+            temp.getContext('2d').drawImage(canvas, 0, 0);
+            canvas.width = w;
+            canvas.height = h;
+            ctx.drawImage(temp, 0, 0);
+        } else {
+            canvas.width = w;
+            canvas.height = h;
+        }
+    }
+    window.addEventListener('resize', resizeCanvasPreserve);
+    resizeCanvasPreserve();
 
-    penToggle.onclick = () => {
-        penActive = !penActive;
+    function setPenActive(active) {
+        penActive = active;
         penToggle.classList.toggle('active', penActive);
         canvas.classList.toggle('active', penActive);
-    };
+        penColorsBar.classList.toggle('visible', penActive);
+    }
 
+    penToggle.onclick = () => setPenActive(!penActive);
     document.getElementById('canvas-clear').onclick = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // === 画线：同时支持鼠标、触摸屏手指与手写笔（Pointer Events） ===
+    penColorsBar.querySelectorAll('.color-dot').forEach(dot => {
+        dot.onclick = () => {
+            penColor = dot.dataset.color;
+            penColorsBar.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+            dot.classList.add('selected');
+        };
+    });
+
     let activePointerId = null;
 
     function applyStrokeStyle() {
-        ctx.strokeStyle = 'red';
-        ctx.lineWidth = 4;
+        ctx.strokeStyle = penColor;
+        ctx.lineWidth = 5;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
     }
 
     canvas.addEventListener('pointerdown', (e) => {
         if (!penActive) return;
-        if (activePointerId !== null) return;   // 只跟第一根手指/笔，避免多指乱画
+        if (activePointerId !== null) return;
         activePointerId = e.pointerId;
         drawing = true;
         try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
         applyStrokeStyle();
         ctx.beginPath();
         ctx.moveTo(e.clientX, e.clientY);
-        ctx.lineTo(e.clientX + 0.01, e.clientY + 0.01);  // 轻点也留一个点
+        ctx.lineTo(e.clientX + 0.01, e.clientY + 0.01);
         ctx.stroke();
         e.preventDefault();
     }, { passive: false });
 
     canvas.addEventListener('pointermove', (e) => {
         if (!drawing || !penActive || e.pointerId !== activePointerId) return;
-        e.preventDefault();                     // 触摸时阻止页面跟着滚动
+        e.preventDefault();
         const events = (e.getCoalescedEvents && e.getCoalescedEvents().length) ? e.getCoalescedEvents() : [e];
         for (const ev of events) {
             ctx.lineTo(ev.clientX, ev.clientY);
@@ -190,85 +547,203 @@
     canvas.addEventListener('pointerup', endStroke);
     canvas.addEventListener('pointercancel', endStroke);
 
+    // === 教师便签（Pointer 拖拽 + 本地自动保存） ===
     const noteBox = document.getElementById('note-box');
+    const noteBody = document.getElementById('note-body');
+    const noteStorageKey = 'irc_notes_' + location.pathname;
+    noteBody.value = safeStorageGet(noteStorageKey) || '';
+    noteBody.addEventListener('input', () => {
+        safeStorageSet(noteStorageKey, noteBody.value);
+    });
+
     document.getElementById('note-toggle').onclick = () => {
-        noteBox.style.display = (noteBox.style.display === 'flex') ? 'none' : 'flex';
+        const show = noteBox.style.display !== 'flex';
+        noteBox.style.display = show ? 'flex' : 'none';
+        if (show) noteBody.focus();
+    };
+    document.getElementById('note-close').onclick = () => {
+        noteBox.style.display = 'none';
+    };
+    document.getElementById('note-clear').onclick = () => {
+        noteBody.value = '';
+        safeStorageRemove(noteStorageKey);
     };
 
-    let drag = false;
-    let ox, oy;
-    const handle = document.getElementById('drag-handle');
-    handle.onmousedown = (e) => { drag = true; ox = e.clientX - noteBox.offsetLeft; oy = e.clientY - noteBox.offsetTop; };
-    window.onmousemove = (e) => { if(drag) { noteBox.style.left = (e.clientX - ox) + 'px'; noteBox.style.top = (e.clientY - oy) + 'px'; } };
-    window.onmouseup = () => drag = false;
+    const dragHandle = document.getElementById('drag-handle');
+    let dragPointerId = null;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
 
-    function playTitleAudio() {
-        if (currentAudio && currentIdx === 'title') {
-            if (currentAudio.paused) {
-                currentAudio.play().catch(() => {
-                    console.log(`无法恢复播放音频 text.mp3`);
-                });
-            } else {
-                currentAudio.pause();
-            }
-            return;
+    dragHandle.addEventListener('pointerdown', (e) => {
+        if (e.target.closest('button')) return;
+        dragPointerId = e.pointerId;
+        dragOffsetX = e.clientX - noteBox.offsetLeft;
+        dragOffsetY = e.clientY - noteBox.offsetTop;
+        try { dragHandle.setPointerCapture(e.pointerId); } catch (err) {}
+    });
+
+    dragHandle.addEventListener('pointermove', (e) => {
+        if (dragPointerId !== e.pointerId) return;
+        const maxLeft = Math.max(0, window.innerWidth - noteBox.offsetWidth);
+        const maxTop = Math.max(0, window.innerHeight - 60);
+        const nextLeft = Math.min(maxLeft, Math.max(0, e.clientX - dragOffsetX));
+        const nextTop = Math.min(maxTop, Math.max(0, e.clientY - dragOffsetY));
+        noteBox.style.left = nextLeft + 'px';
+        noteBox.style.top = nextTop + 'px';
+    });
+
+    function endNoteDrag(e) {
+        if (dragPointerId !== e.pointerId) return;
+        if (dragHandle.hasPointerCapture && dragHandle.hasPointerCapture(dragPointerId)) {
+            try { dragHandle.releasePointerCapture(dragPointerId); } catch (err) {}
         }
+        dragPointerId = null;
+    }
+    dragHandle.addEventListener('pointerup', endNoteDrag);
+    dragHandle.addEventListener('pointercancel', endNoteDrag);
 
-        if (currentAudio) {
-            currentAudio.pause();
-        }
-
-        const audioPath = 'media/audio/text.mp3'; 
-        currentAudio = new Audio(audioPath);
-        currentIdx = 'title';
-        currentAudio.play().catch(() => {
-            console.log(`Audio file text.mp3 not found.`);
-        });
-    };
-    // === 自定义点击解释弹窗逻辑（包含多行换行支持） ===
+    // === 词汇 / 长难句解释弹窗 ===
     const tooltip = document.getElementById('custom-tooltip');
+    const tooltipBody = document.getElementById('custom-tooltip-body');
+    let activeAbbrEl = null;
+
+    function hideTooltip() {
+        tooltip.style.display = 'none';
+        if (activeAbbrEl) {
+            activeAbbrEl.classList.remove('abbr-active');
+            activeAbbrEl = null;
+        }
+    }
+
+    renderSlideView();
+
+    document.getElementById('tooltip-close').onclick = (e) => {
+        e.stopPropagation();
+        hideTooltip();
+    };
 
     document.addEventListener('click', (e) => {
-        // 查找是否点击了 abbr 或含有解释属性的元素
         const target = e.target.closest('abbr[title], [data-tooltip]');
 
         if (target) {
-            e.stopPropagation(); // 阻止冒泡，防止触发全局关闭
+            e.stopPropagation();
 
-            // 首次点击时，将 title 转存为 data-tooltip，屏蔽原生系统小提示
+            if (activeAbbrEl && activeAbbrEl !== target) {
+                activeAbbrEl.classList.remove('abbr-active');
+            }
+            activeAbbrEl = target;
+            activeAbbrEl.classList.add('abbr-active');
+
             if (target.hasAttribute('title')) {
                 target.setAttribute('data-tooltip', target.getAttribute('title'));
                 target.removeAttribute('title');
             }
 
-            // 🌟 关键修改：获取 raw 文本并替换换行符 &#10; 为 \n
-            let rawText = target.getAttribute('data-tooltip') || '';
-            let plainText = rawText.replaceAll(/<br\s*\/?>/gi, '\n');
-            // 2. 按 \n 切分成数组，过滤掉空行（可选），并用 <div> 包裹每一行
-            let formattedText = plainText
-                .split('\n')
-                .map(line => `<div>${line}</div>`)
-                .join('');
-            // 填入转换后的换行文本
-            tooltip.innerHTML = formattedText;
+            const rawText = target.getAttribute('data-tooltip') || '';
+            const plainText = rawText.replaceAll(/<br\s*\/?>/gi, '\n');
+
+            tooltipBody.innerHTML = '';
+            plainText.split('\n').forEach(line => {
+                const lineDiv = document.createElement('div');
+                lineDiv.textContent = line;
+                tooltipBody.appendChild(lineDiv);
+            });
+
+            tooltip.style.visibility = 'hidden';
             tooltip.style.display = 'block';
 
-            // 获取点击元素的位置，计算弹窗弹出位置（默认显示在词汇正下方）
             const rect = target.getBoundingClientRect();
-            let left = rect.left;
-            let top = rect.bottom + 10;
+            const tipRect = tooltip.getBoundingClientRect();
+            const margin = 14;
 
-            // 边缘防溢出处理：如果弹窗超出屏幕右侧，自动靠右对齐
-            if (left + 400 > window.innerWidth) {
-                left = window.innerWidth - 420;
+            let left = rect.left;
+            if (left + tipRect.width > window.innerWidth - margin) {
+                left = window.innerWidth - tipRect.width - margin;
+            }
+            left = Math.max(margin, left);
+
+            let top = rect.bottom + 12;
+            if (top + tipRect.height > window.innerHeight - margin) {
+                const aboveTop = rect.top - tipRect.height - 12;
+                top = aboveTop >= margin ? aboveTop : Math.max(margin, window.innerHeight - tipRect.height - margin);
             }
 
-            tooltip.style.left = Math.max(10, left) + 'px';
+            tooltip.style.left = left + 'px';
             tooltip.style.top = top + 'px';
-        } else {
-            // 点击页面其他任意位置（且不是点击弹窗本身），隐藏解释弹窗
-            if (!e.target.closest('#custom-tooltip')) {
-                tooltip.style.display = 'none';
+            tooltip.style.visibility = 'visible';
+        } else if (!e.target.closest('#custom-tooltip')) {
+            hideTooltip();
+        }
+    });
+
+    // === 图片点击放大预览 ===
+    const lightbox = document.getElementById('img-lightbox');
+    const lightboxImg = document.getElementById('img-lightbox-target');
+
+    container.addEventListener('click', (e) => {
+        if (penActive) return;
+        const img = e.target.closest('.img-display');
+        if (img && img.src) {
+            lightboxImg.src = img.src;
+            lightbox.classList.add('open');
+        }
+    });
+
+    lightbox.addEventListener('click', () => {
+        lightbox.classList.remove('open');
+    });
+
+    // === 课堂键盘快捷键（兼容翻页笔） ===
+    document.addEventListener('keydown', (e) => {
+        const tag = e.target.tagName;
+        if (tag === 'TEXTAREA' || tag === 'INPUT' || tag === 'SELECT') {
+            if (e.key === 'Escape') {
+                e.target.blur();
+            }
+            return;
+        }
+
+        if (e.key === 'Escape') {
+            if (lightbox.classList.contains('open')) {
+                lightbox.classList.remove('open');
+            } else if (tooltip.style.display === 'block') {
+                hideTooltip();
+            } else if (penActive) {
+                setPenActive(false);
+            } else if (noteBox.style.display === 'flex') {
+                noteBox.style.display = 'none';
+            }
+            return;
+        }
+
+        if (isSlideMode && (e.key === 'ArrowRight' || e.key === 'PageDown')) {
+            e.preventDefault();
+            goToSlide(slideIndex + 1);
+        } else if (isSlideMode && (e.key === 'ArrowLeft' || e.key === 'PageUp')) {
+            e.preventDefault();
+            goToSlide(slideIndex - 1);
+        } else if (e.key === '+' || e.key === '=') {
+            e.preventDefault();
+            applyFontSize(currentFontSize + 4);
+        } else if (e.key === '-' || e.key === '_') {
+            e.preventDefault();
+            applyFontSize(currentFontSize - 4);
+        } else if (e.key === 's' || e.key === 'S') {
+            modeToggleBtn.click();
+        } else if (e.key === 'f' || e.key === 'F') {
+            toggleFullscreen();
+        } else if (e.key === 'd' || e.key === 'D') {
+            setPenActive(!penActive);
+        } else if (e.key === 'c' || e.key === 'C') {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        } else if (e.key === 'n' || e.key === 'N') {
+            document.getElementById('note-toggle').click();
+        } else if (e.key === 'p' || e.key === 'P') {
+            if (isSlideMode) {
+                if (slideIndex === 0) playTitleAudio();
+                else playAudio(slideIndex);
+            } else {
+                playTitleAudio();
             }
         }
     });
